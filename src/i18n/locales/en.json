@@ -1,0 +1,70 @@
+{
+  "common": {
+    "appName": "SkyRoute",
+    "logout": "Log Out",
+    "loading": "Loading...",
+    "back": "Go Back"
+  },
+  "auth": {
+    "loginTitle": "Sign In",
+    "registerTitle": "Create Account",
+    "welcomeTitle": "Your Journey Starts Here",
+    "welcomeDescription": "Browse flights, choose your seat and easily manage your ticket operations.",
+    "loginSubtitle": "Sign in to your account to continue your journey.",
+    "registerSubtitle": "Create your account and start exploring flights.",
+    "demoAdmin": "admin@flight.com / admin123",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "passwordAgain": "Confirm Password",
+    "emailPlaceholder": "example@mail.com",
+    "loginButton": "Sign In",
+    "loggingIn": "Signing in...",
+    "registerButton": "Create Account",
+    "registering": "Creating account...",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "goToRegister": "Create one",
+    "goToLogin": "Sign in",
+    "errors": {
+      "loginRequired": "Email and password are required.",
+      "loginFailed": "An error occurred while signing in.",
+      "allFieldsRequired": "All fields are required.",
+      "passwordTooShort": "Password must contain at least 6 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "registerFailed": "An error occurred while creating the account."
+    }
+  },
+  "navigation": {
+    "adminDashboard": "Admin Dashboard",
+    "customerDashboard": "Customer Dashboard"
+  },
+  "dashboard": {
+    "adminEyebrow": "Management Area",
+    "adminTitle": "Welcome to the Management Center",
+    "adminDescription": "Flight, seat and system management operations will be performed from this dashboard.",
+    "customerEyebrow": "Passenger Area",
+    "customerTitle": "Plan a New Journey",
+    "customerDescription": "Flight browsing and ticket purchasing operations will be performed from this dashboard.",
+    "flightManagement": "Flight Management",
+    "seatManagement": "Seat Management",
+    "systemOverview": "System Overview",
+    "flightSearch": "Search Flights",
+    "myTickets": "My Tickets",
+    "profile": "My Profile",
+    "adminCardDescription": "This management feature will become available during the second stage of the project.",
+    "customerCardDescription": "This customer feature will become available during the second stage of the project.",
+    "comingSoon": "Coming Soon"
+  },
+  "unauthorized": {
+    "title": "Unauthorized Access",
+    "description": "Your user role does not have permission to access this page.",
+    "button": "Return to Dashboard"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for may have been removed, moved or never created.",
+    "button": "Return to Home"
+  }
+}

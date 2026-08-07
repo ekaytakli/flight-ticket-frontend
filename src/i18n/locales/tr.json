@@ -1,0 +1,70 @@
+{
+  "common": {
+    "appName": "SkyRoute",
+    "logout": "Çıkış Yap",
+    "loading": "Yükleniyor...",
+    "back": "Geri Dön"
+  },
+  "auth": {
+    "loginTitle": "Giriş Yap",
+    "registerTitle": "Kayıt Ol",
+    "welcomeTitle": "Yolculuğun Burada Başlıyor",
+    "welcomeDescription": "Uçuşları görüntüle, koltuğunu seç ve bilet işlemlerini kolayca yönet.",
+    "loginSubtitle": "Hesabına giriş yaparak yolculuğuna devam et.",
+    "registerSubtitle": "Yeni hesabını oluştur ve uçuşları keşfet.",
+    "demoAdmin": "admin@flight.com / admin123",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "email": "E-posta",
+    "password": "Şifre",
+    "passwordAgain": "Şifre Tekrar",
+    "emailPlaceholder": "ornek@mail.com",
+    "loginButton": "Giriş Yap",
+    "loggingIn": "Giriş yapılıyor...",
+    "registerButton": "Kayıt Ol",
+    "registering": "Kayıt oluşturuluyor...",
+    "noAccount": "Hesabın yok mu?",
+    "hasAccount": "Zaten hesabın var mı?",
+    "goToRegister": "Kayıt ol",
+    "goToLogin": "Giriş yap",
+    "errors": {
+      "loginRequired": "E-posta ve şifre zorunludur.",
+      "loginFailed": "Giriş sırasında bir hata oluştu.",
+      "allFieldsRequired": "Tüm alanları doldurmalısınız.",
+      "passwordTooShort": "Şifre en az 6 karakter olmalıdır.",
+      "passwordMismatch": "Şifreler eşleşmiyor.",
+      "registerFailed": "Kayıt sırasında bir hata oluştu."
+    }
+  },
+  "navigation": {
+    "adminDashboard": "Yönetici Paneli",
+    "customerDashboard": "Müşteri Paneli"
+  },
+  "dashboard": {
+    "adminEyebrow": "Yönetim Alanı",
+    "adminTitle": "Yönetim Merkezine Hoş Geldin",
+    "adminDescription": "Uçuş, koltuk ve sistem yönetimi işlemleri bu panel üzerinden gerçekleştirilecektir.",
+    "customerEyebrow": "Yolcu Alanı",
+    "customerTitle": "Yeni Bir Yolculuk Planla",
+    "customerDescription": "Uçuşları görüntüleme ve bilet satın alma işlemleri bu panel üzerinden gerçekleştirilecektir.",
+    "flightManagement": "Uçuş Yönetimi",
+    "seatManagement": "Koltuk Yönetimi",
+    "systemOverview": "Sistem Özeti",
+    "flightSearch": "Uçuş Ara",
+    "myTickets": "Biletlerim",
+    "profile": "Profilim",
+    "adminCardDescription": "Bu yönetim özelliği projenin ikinci aşamasında aktif hâle getirilecektir.",
+    "customerCardDescription": "Bu müşteri özelliği projenin ikinci aşamasında aktif hâle getirilecektir.",
+    "comingSoon": "Yakında"
+  },
+  "unauthorized": {
+    "title": "Yetkisiz Erişim",
+    "description": "Bu sayfaya erişmek için gerekli kullanıcı rolüne sahip değilsiniz.",
+    "button": "Panele Dön"
+  },
+  "notFound": {
+    "title": "Sayfa Bulunamadı",
+    "description": "Aradığınız sayfa kaldırılmış, taşınmış veya hiç oluşturulmamış olabilir.",
+    "button": "Ana Sayfaya Dön"
+  }
+}
