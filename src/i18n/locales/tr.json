@@ -55,7 +55,17 @@
     "profile": "Profilim",
     "adminCardDescription": "Bu yönetim özelliği projenin ikinci aşamasında aktif hâle getirilecektir.",
     "customerCardDescription": "Bu müşteri özelliği projenin ikinci aşamasında aktif hâle getirilecektir.",
-    "comingSoon": "Yakında"
+    "comingSoon": "Yakında",
+    "flightSearchDescription": "Mevcut public arama ekranından yeni bir uçuş ara.",
+    "myTicketsDescription": "PNR, uçuş, tarih ve koltuk bilgilerini görüntüle.",
+    "profileDescription": "Profil yönetimi daha sonraki aşamada eklenecektir.",
+    "flightManagementDescription": "Uçuşları listele, yeni uçuş ekle veya mevcut uçuşu düzenle.",
+    "seatManagementDescription": "Bir uçuş seçerek o uçuşun koltuk durumlarını görüntüle.",
+    "systemOverviewDescription": "Sistem özeti daha sonraki aşamada eklenecektir.",
+    "searchNow": "Uçuş Ara",
+    "viewTickets": "Biletleri Gör",
+    "manageFlights": "Uçuşları Yönet",
+    "chooseFlight": "Uçuş Seç"
   },
   "unauthorized": {
     "title": "Yetkisiz Erişim",
@@ -159,5 +169,65 @@
   "seat": "Koltuk",
   "newSearch": "Yeni Uçuş Ara",
   "login": "Giriş Yap"
-}
+},
+  "myTickets": {
+    "eyebrow": "Müşteri Alanı",
+    "title": "Biletlerim",
+    "description": "Satın alınan biletlerin temel bilgileri bu alanda gösterilecektir.",
+    "searchFlight": "Yeni Uçuş Ara",
+    "pnr": "PNR",
+    "flightNo": "Uçuş No",
+    "departure": "Kalkış",
+    "destination": "Varış",
+    "date": "Tarih",
+    "seat": "Koltuk",
+    "active": "Aktif",
+    "previewNote": "Gösterilen kayıtlar frontend arayüzünü hazırlamak için kullanılan örnek verilerdir."
+  },
+  "adminFlights": {
+    "eyebrow": "Admin Alanı",
+    "title": "Uçuş Yönetimi",
+    "description": "Uçuşları listele, yeni uçuş oluştur, düzenleme ve koltuk yönetimi ekranlarına geç.",
+    "addFlight": "Yeni Uçuş Ekle",
+    "flightNo": "Uçuş No",
+    "route": "Rota",
+    "departureTime": "Kalkış Zamanı",
+    "destinationTime": "Varış Zamanı",
+    "actions": "İşlemler",
+    "edit": "Düzenle",
+    "seats": "Koltuklar",
+    "delete": "Sil",
+    "deletePreview": "{{flightNo}} için silme butonu hazır. Backend servisi bağlandığında gerçek silme işlemi yapılacak.",
+    "previewNote": "Uçuşlar şimdilik frontend örnek verileriyle gösterilmektedir."
+  },
+  "adminFlightForm": {
+    "eyebrow": "Uçuş Formu",
+    "newTitle": "Yeni Uçuş Ekle",
+    "editTitle": "Uçuşu Düzenle",
+    "description": "Uçuş bilgilerini form alanlarından girin. API bağlantısı sonraki adımda eklenecektir.",
+    "flightNo": "Uçuş No",
+    "departurePoint": "Kalkış Noktası",
+    "destinationPoint": "Varış Noktası",
+    "departureTime": "Kalkış Zamanı",
+    "destinationTime": "Varış Zamanı",
+    "createButton": "Uçuş Oluştur",
+    "updateButton": "Değişiklikleri Kaydet",
+    "createPreview": "Form hazır. Backend endpointi geldiğinde yeni uçuş oluşturma isteği buraya bağlanacak.",
+    "updatePreview": "Form hazır. Backend endpointi geldiğinde uçuş güncelleme isteği buraya bağlanacak."
+  },
+  "adminSeats": {
+    "eyebrow": "Koltuk Yönetimi",
+    "title": "Uçuş Koltukları",
+    "flightDescription": "{{flightNo}} - {{departure}} → {{destination}} uçuşunun koltukları.",
+    "flightNotFound": "Seçilen uçuş için örnek kayıt bulunamadı.",
+    "type": "Tip",
+    "available": "Müsait",
+    "unavailable": "Dolu",
+    "noSeats": "Bu uçuş için gösterilecek koltuk bulunamadı.",
+    "previewNote": "Koltuklar şimdilik frontend örnek verileriyle gösterilmektedir."
+  },
+  "seatTypes": {
+    "economy": "Ekonomi",
+    "business": "Business"
+  }
 }

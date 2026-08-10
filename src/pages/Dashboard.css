@@ -62,6 +62,16 @@
     background-color: #ffffff;
     box-shadow: 0 14px 35px rgba(15, 23, 42, 0.07);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+}
+
+.dashboard-card--link {
+    color: inherit;
+    cursor: pointer;
+}
+
+.dashboard-card--disabled {
+    opacity: 0.72;
 }
 
 .dashboard-card:hover {
@@ -94,7 +104,7 @@
     line-height: 1.65;
 }
 
-.dashboard-card__status {
+.dashboard-card__action {
     display: inline-flex;
     margin-top: 22px;
     padding: 6px 10px;
@@ -125,4 +135,9 @@
     .dashboard-description {
         font-size: 15px;
     }
+}
+
+.dashboard-card--disabled:hover {
+    transform: none;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.07);
 }

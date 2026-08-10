@@ -55,7 +55,17 @@
     "profile": "My Profile",
     "adminCardDescription": "This management feature will become available during the second stage of the project.",
     "customerCardDescription": "This customer feature will become available during the second stage of the project.",
-    "comingSoon": "Coming Soon"
+    "comingSoon": "Coming Soon",
+    "flightSearchDescription": "Search for a new flight using the existing public search screen.",
+    "myTicketsDescription": "View PNR, flight, date and seat information.",
+    "profileDescription": "Profile management will be added in a later stage.",
+    "flightManagementDescription": "List flights, add a new flight or edit an existing flight.",
+    "seatManagementDescription": "Select a flight to view its seat availability.",
+    "systemOverviewDescription": "System overview will be added in a later stage.",
+    "searchNow": "Search Flights",
+    "viewTickets": "View Tickets",
+    "manageFlights": "Manage Flights",
+    "chooseFlight": "Choose Flight"
   },
   "unauthorized": {
     "title": "Unauthorized Access",
@@ -156,5 +166,65 @@
   "seat": "Seat",
   "newSearch": "Search New Flight",
   "login": "Sign In"
-}
+},
+  "myTickets": {
+    "eyebrow": "Customer Area",
+    "title": "My Tickets",
+    "description": "Basic information for purchased tickets will be displayed here.",
+    "searchFlight": "Search New Flight",
+    "pnr": "PNR",
+    "flightNo": "Flight No",
+    "departure": "Departure",
+    "destination": "Destination",
+    "date": "Date",
+    "seat": "Seat",
+    "active": "Active",
+    "previewNote": "The displayed records are sample data used to prepare the frontend interface."
+  },
+  "adminFlights": {
+    "eyebrow": "Admin Area",
+    "title": "Flight Management",
+    "description": "List flights, create a new flight and open edit or seat management screens.",
+    "addFlight": "Add New Flight",
+    "flightNo": "Flight No",
+    "route": "Route",
+    "departureTime": "Departure Time",
+    "destinationTime": "Arrival Time",
+    "actions": "Actions",
+    "edit": "Edit",
+    "seats": "Seats",
+    "delete": "Delete",
+    "deletePreview": "The delete UI for {{flightNo}} is ready. The real delete request will be connected when the backend service is available.",
+    "previewNote": "Flights are currently displayed with frontend sample data."
+  },
+  "adminFlightForm": {
+    "eyebrow": "Flight Form",
+    "newTitle": "Add New Flight",
+    "editTitle": "Edit Flight",
+    "description": "Enter flight information in the form. API integration will be added in the next step.",
+    "flightNo": "Flight No",
+    "departurePoint": "Departure Point",
+    "destinationPoint": "Destination Point",
+    "departureTime": "Departure Time",
+    "destinationTime": "Arrival Time",
+    "createButton": "Create Flight",
+    "updateButton": "Save Changes",
+    "createPreview": "The form is ready. The create-flight request will be connected when the backend endpoint is available.",
+    "updatePreview": "The form is ready. The update-flight request will be connected when the backend endpoint is available."
+  },
+  "adminSeats": {
+    "eyebrow": "Seat Management",
+    "title": "Flight Seats",
+    "flightDescription": "Seats for {{flightNo}} - {{departure}} → {{destination}}.",
+    "flightNotFound": "No sample record was found for the selected flight.",
+    "type": "Type",
+    "available": "Available",
+    "unavailable": "Occupied",
+    "noSeats": "No seats are available to display for this flight.",
+    "previewNote": "Seats are currently displayed with frontend sample data."
+  },
+  "seatTypes": {
+    "economy": "Economy",
+    "business": "Business"
+  }
 }
