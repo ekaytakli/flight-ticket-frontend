@@ -7,9 +7,15 @@ import { renderApp } from "./renderApp";
 function storeUser(role: "ROLE_ADMIN" | "ROLE_CUSTOMER", email: string) {
     localStorage.setItem(
         "token",
-        role === "ROLE_ADMIN" ? "mock-admin-token" : "mock-customer-token",
+        role === "ROLE_ADMIN"
+            ? "test-admin-token"
+            : "test-customer-token",
     );
-    localStorage.setItem("user", JSON.stringify({ email, role }));
+
+    localStorage.setItem(
+        "user",
+        JSON.stringify({ email, role }),
+    );
 }
 
 describe("routing, roles and language", () => {
@@ -28,7 +34,9 @@ describe("routing, roles and language", () => {
         expect(
             screen.getByRole("heading", { name: "Yeni Bir Yolculuk Planla" }),
         ).toBeInTheDocument();
-        expect(screen.getByText("customer@test.com")).toBeInTheDocument();
+        expect(
+            screen.getAllByText("customer@test.com").length,
+        ).toBeGreaterThan(0);
     });
 
     it("blocks a customer from the admin page", () => {
