@@ -1,4 +1,9 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import FlightResultsPage from "./pages/FlightResultsPage";
+import SeatSelectionPage from "./pages/SeatSelectionPage";
+import PassengerInfoPage from "./pages/PassengerInfoPage";
+import BookingSummaryPage from "./pages/BookingSummaryPage";
+import BookingSuccessPage from "./pages/BookingSuccessPage";
 
 /* Giriş kontrolü yapan route bileşeni. */
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -9,6 +14,7 @@ import RoleRoute from "./components/RoleRoute";
 /* Uygulamada gösterilecek sayfalar. */
 import AdminDashboard from "./pages/AdminDashboard";
 import CustomerDashboard from "./pages/CustomerDashboard";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -16,15 +22,44 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 
 /*
  * Uygulamadaki bütün sayfa yollarını tanımlar.
- * Public, korumalı ve rol bazlı route'lar burada yönetilir.
+ *
+ * Ana sayfa, giriş ve kayıt sayfaları public olarak kullanılabilir.
+ * Admin ve Customer panelleri ise authentication ve rol kontrolünden geçer.
  */
 export default function App() {
     return (
         <Routes>
-            {/* Ana adrese gelen kullanıcı login sayfasına gönderilir. */}
+
+            {/*
+             * PUBLIC ANA SAYFA
+             *
+             * Kullanıcının giriş yapması gerekmez.
+             * Uygulama açıldığında artık doğrudan login sayfasına
+             * yönlendirme yapılmaz.
+             */}
             <Route
                 path="/"
-                element={<Navigate to="/login" replace />}
+                element={<HomePage />}
+            />
+            <Route
+                path="/booking-success"
+                element={<BookingSuccessPage />}
+            />
+            <Route
+                path="/booking-summary"
+                element={<BookingSummaryPage />}
+            />
+            <Route
+                path="/passenger-info"
+                element={<PassengerInfoPage />}
+            />
+            <Route
+                path="/flights/:flightId/seats"
+                element={<SeatSelectionPage />}
+            />
+            <Route
+                path="/flights"
+                element={<FlightResultsPage />}
             />
 
             {/* Giriş gerektirmeyen public sayfalar. */}
@@ -43,13 +78,24 @@ export default function App() {
                 element={<UnauthorizedPage />}
             />
 
-            {/* Bu grubun altındaki sayfalar giriş gerektirir. */}
+            {/*
+             * Bu grubun altındaki sayfalara erişebilmek için
+             * kullanıcının giriş yapmış olması gerekir.
+             */}
             <Route element={<ProtectedRoute />}>
-                {/* Admin paneline sadece ROLE_ADMIN erişebilir. */}
+
+                {/*
+                 * ADMIN ROUTE
+                 *
+                 * Admin paneline yalnızca ROLE_ADMIN
+                 * rolündeki kullanıcı erişebilir.
+                 */}
                 <Route
                     element={
                         <RoleRoute
-                            allowedRoles={["ROLE_ADMIN"]}
+                            allowedRoles={[
+                                "ROLE_ADMIN",
+                            ]}
                         />
                     }
                 >
@@ -59,7 +105,12 @@ export default function App() {
                     />
                 </Route>
 
-                {/* Customer paneline Customer ve Admin erişebilir. */}
+                {/*
+                 * CUSTOMER ROUTE
+                 *
+                 * Customer paneline hem Customer
+                 * hem de Admin erişebilir.
+                 */}
                 <Route
                     element={
                         <RoleRoute
@@ -75,13 +126,18 @@ export default function App() {
                         element={<CustomerDashboard />}
                     />
                 </Route>
+
             </Route>
 
-            {/* Tanımlanmayan adreslerde 404 sayfası gösterilir. */}
+            {/*
+             * Yukarıdaki route'lardan hiçbirine uymayan
+             * adreslerde 404 sayfası gösterilir.
+             */}
             <Route
                 path="*"
                 element={<NotFoundPage />}
             />
+
         </Routes>
     );
 }

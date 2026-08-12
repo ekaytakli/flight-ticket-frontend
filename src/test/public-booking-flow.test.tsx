@@ -25,6 +25,10 @@ function storeUser(
 }
 
 describe("routing, roles and language", () => {
+    /*
+     * Admin sayfası korumalıdır.
+     * Giriş yapmayan kullanıcı login sayfasına gönderilir.
+     */
     it(
         "redirects an unauthenticated user from admin to login",
         () => {
@@ -38,6 +42,10 @@ describe("routing, roles and language", () => {
         },
     );
 
+    /*
+     * Daha önce giriş yapan Customer kullanıcısının
+     * localStorage oturumu geri yüklenir.
+     */
     it(
         "restores a customer session from localStorage",
         () => {
@@ -54,10 +62,6 @@ describe("routing, roles and language", () => {
                 }),
             ).toBeInTheDocument();
 
-            /*
-             * E-posta Navbar ve Dashboard içinde birden fazla
-             * yerde görünebileceği için getAllByText kullanılır.
-             */
             expect(
                 screen.getAllByText(
                     "customer@test.com",
@@ -66,6 +70,9 @@ describe("routing, roles and language", () => {
         },
     );
 
+    /*
+     * Customer kullanıcısı Admin paneline erişemez.
+     */
     it(
         "blocks a customer from the admin page",
         () => {
@@ -93,6 +100,9 @@ describe("routing, roles and language", () => {
         },
     );
 
+    /*
+     * Dil değiştirme sistemi kontrol edilir.
+     */
     it(
         "changes the application language to English",
         async () => {
@@ -122,32 +132,35 @@ describe("routing, roles and language", () => {
         },
     );
 
-    it(
-        "shows the custom 404 page",
-        () => {
-            renderApp("/olmayan-sayfa");
+    /*
+     * Tanımlanmayan bir route'ta 404 sayfası açılır.
+     *
+     * Eskiden Ana Sayfaya Dön butonu /login'e gidiyordu.
+     * Artık public HomePage bulunduğu için "/" adresine gider.
+     */
+    it("shows the custom 404 page", () => {
+        renderApp("/olmayan-sayfa");
 
-            expect(
-                screen.getByRole("heading", {
-                    name: "Sayfa Bulunamadı",
-                }),
-            ).toBeInTheDocument();
+        expect(
+            screen.getByRole("heading", {
+                name: "Sayfa Bulunamadı",
+            }),
+        ).toBeInTheDocument();
 
-            /*
-             * Artık gerçek public ana sayfa "/" olduğu için
-             * 404 sayfasındaki buton login'e değil ana sayfaya gider.
-             */
-            expect(
-                screen.getByRole("link", {
-                    name: "Ana Sayfaya Dön",
-                }),
-            ).toHaveAttribute(
-                "href",
-                "/",
-            );
-        },
-    );
+        expect(
+            screen.getByRole("link", {
+                name: "Ana Sayfaya Dön",
+            }),
+        ).toHaveAttribute(
+            "href",
+            "/",
+        );
+    });
 
+    /*
+     * localStorage içindeki bozuk user verisi temizlenir.
+     * Kullanıcı korumalı sayfaya erişemez.
+     */
     it(
         "cleans an invalid stored user and returns to login",
         () => {
@@ -175,6 +188,10 @@ describe("routing, roles and language", () => {
         },
     );
 
+    /*
+     * Navbar üzerinden çıkış yapıldığında
+     * kullanıcı ve token bilgileri temizlenir.
+     */
     it(
         "logs out from the navbar",
         async () => {

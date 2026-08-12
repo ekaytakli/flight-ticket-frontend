@@ -66,5 +66,99 @@
     "title": "Page Not Found",
     "description": "The page you are looking for may have been removed, moved or never created.",
     "button": "Return to Home"
+  },
+  "home": {
+    "eyebrow": "SkyRoute",
+    "title": "Find your flight and start your journey",
+    "description": "Search flights without signing in and choose the journey that suits you.",
+    "departure": "From",
+    "destination": "To",
+    "date": "Date",
+    "searchButton": "Search Flights",
+    "departurePlaceholder": "Istanbul",
+    "destinationPlaceholder": "Ankara",
+    "errors": {
+      "required": "Departure, destination and date are required."
+    }
+  },"flightResults": {
+  "eyebrow": "Flight Search",
+  "title": "Available Flights",
+  "description": "Flights matching your search criteria will be listed here.",
+  "departure": "Departure",
+  "destination": "Destination",
+  "date": "Date",
+  "flightNo": "Flight No",
+  "selectFlight": "Select Flight",
+  "waitingTitle": "Flight results are being prepared",
+  "waitingDescription": "Real flights will be displayed here when the backend flight service is available.",
+  "searchAgain": "Search Again",
+  "backHome": "Home",
+  "noFlights": "No flights were found matching your search criteria.",
+  "errors": {
+    "fetchFailed": "An error occurred while loading flights."
   }
+},"seatSelection": {
+  "eyebrow": "Seat Selection",
+  "title": "Choose Your Seat",
+  "description": "Select an available seat to continue to passenger information.",
+  "home": "Home",
+  "flight": "Flight",
+  "route": "Route",
+  "date": "Date",
+  "chooseSeat": "Available Seats",
+  "available": "Available",
+  "selected": "Selected",
+  "unavailable": "Occupied",
+  "summaryTitle": "Selection Summary",
+  "selectedSeat": "Selected Seat",
+  "seatType": "Seat Type",
+  "continue": "Continue to Passenger Information",
+  "noSeatSelected": "Select an available seat to continue."
+},"passengerInfo": {
+  "eyebrow": "Passenger Information",
+  "title": "Enter Passenger Information",
+  "description": "Fill in the passenger details to continue with the ticket process.",
+  "home": "Home",
+  "flight": "Flight",
+  "route": "Route",
+  "seat": "Seat",
+  "formTitle": "Passenger Details",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "email": "Email",
+  "phone": "Phone",
+  "continue": "Continue to Booking Summary",
+  "errors": {
+    "required": "All passenger information is required."
+  }
+},"bookingSummary": {
+  "eyebrow": "Booking Summary",
+  "title": "Review Your Reservation",
+  "description": "Review your flight and passenger information before completing the booking.",
+  "home": "Home",
+  "flightTitle": "Flight Information",
+  "passengerTitle": "Passenger Information",
+  "flight": "Flight",
+  "route": "Route",
+  "date": "Date",
+  "seat": "Seat",
+  "name": "Full Name",
+  "email": "Email",
+  "phone": "Phone",
+  "confirmTitle": "Confirm Reservation",
+  "confirmDescription": "If the information is correct, continue to complete the ticket process.",
+  "confirmButton": "Confirm Ticket"
+},"bookingSuccess": {
+  "eyebrow": "Booking Completed",
+  "title": "Your Ticket Process Has Been Completed",
+  "description": "Your reservation was created successfully. Your flight and ticket information has been saved to the system.",
+  "home": "Home",
+  "passenger": "Passenger",
+  "flight": "Flight",
+  "route": "Route",
+  "date": "Date",
+  "seat": "Seat",
+  "newSearch": "Search New Flight",
+  "login": "Sign In"
+}
 }

@@ -1,0 +1,160 @@
+.booking-summary-page {
+    min-height: 100vh;
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.booking-summary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 22px 32px;
+
+    background: #ffffff;
+}
+
+.booking-summary-logo {
+    color: #0f172a;
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.booking-summary-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.booking-summary-home-button {
+    padding: 10px 18px;
+    border-radius: 10px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.booking-summary-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 50px 24px;
+}
+
+.booking-summary-heading {
+    margin-bottom: 28px;
+}
+
+.booking-summary-eyebrow {
+    margin: 0 0 8px;
+    color: #2563eb;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.booking-summary-heading h1 {
+    margin: 0;
+    font-size: 38px;
+}
+
+.booking-summary-heading p {
+    margin-top: 12px;
+    color: #64748b;
+    font-size: 17px;
+}
+
+.booking-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.booking-summary-card,
+.booking-summary-confirmation {
+    padding: 26px;
+
+    border-radius: 18px;
+    background: #ffffff;
+
+    box-shadow:
+            0 10px 35px rgba(15, 23, 42, 0.08);
+}
+
+.booking-summary-card h2,
+.booking-summary-confirmation h2 {
+    margin-top: 0;
+}
+
+.booking-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.booking-summary-row:last-child {
+    border-bottom: 0;
+}
+
+.booking-summary-row span {
+    color: #64748b;
+}
+
+.booking-summary-confirmation {
+    margin-top: 24px;
+}
+
+.booking-summary-confirmation p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.booking-confirm-button {
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px 20px;
+
+    border: 0;
+    border-radius: 10px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font: inherit;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.booking-confirm-button:hover {
+    background: #1d4ed8;
+}
+
+@media (max-width: 700px) {
+    .booking-summary-header {
+        padding: 18px 20px;
+    }
+
+    .booking-summary-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .booking-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}

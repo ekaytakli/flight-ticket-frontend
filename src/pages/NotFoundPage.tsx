@@ -1,34 +1,62 @@
+// Kullanıcıyı başka bir sayfaya yönlendiren bağlantı oluşturmak için kullanılır.
 import { Link } from "react-router-dom";
+
+// Sayfadaki metinleri seçilen dile göre göstermek için kullanılır.
 import { useTranslation } from "react-i18next";
 
+// Kullanıcının Türkçe ve İngilizce arasında geçiş yapmasını sağlar.
 import LanguageSwitcher from "../components/LanguageSwitcher";
-import { useAuth } from "../hooks/useAuth";
+
+// 404 ve diğer durum sayfalarının stil dosyasıdır.
 import "./StatusPage.css";
 
+/*
+ * Kullanıcı uygulamada bulunmayan bir adrese girdiğinde
+ * gösterilen 404 hata sayfasıdır.
+ */
 export default function NotFoundPage() {
+    // Çeviri dosyalarındaki metinlere erişmek için kullanılır.
     const { t } = useTranslation();
-    const { user } = useAuth();
-
-    const homePath = !user
-        ? "/login"
-        : user.role === "ROLE_ADMIN"
-          ? "/admin"
-          : "/customer";
 
     return (
         <main className="status-page">
+
+            {/* Sayfada dil değiştirme seçeneğini gösterir. */}
             <LanguageSwitcher variant="floating" />
+
+            {/* 404 hata bilgilerinin bulunduğu karttır. */}
             <section className="status-card">
-                <div className="status-icon" aria-hidden="true">
+
+                {/* Görsel amaçlı pusula ikonunu gösterir. */}
+                <div
+                    className="status-icon"
+                    aria-hidden="true"
+                >
                     🧭
                 </div>
-                <p className="status-code">404</p>
-                <h1 className="status-title">{t("notFound.title")}</h1>
+
+                {/* HTTP sayfa bulunamadı kodunu gösterir. */}
+                <p className="status-code">
+                    404
+                </p>
+
+                {/* 404 sayfasının başlığını çeviri dosyasından getirir. */}
+                <h1 className="status-title">
+                    {t("notFound.title")}
+                </h1>
+
+                {/* Sayfanın neden bulunamadığını açıklayan metni gösterir. */}
                 <p className="status-description">
                     {t("notFound.description")}
                 </p>
+
                 <div className="status-actions">
-                    <Link className="status-button" to={homePath}>
+
+                    {/* Kullanıcıyı uygulamanın ana sayfasına geri götürür. */}
+                    <Link
+                        className="status-button"
+                        to="/"
+                    >
                         {t("notFound.button")}
                     </Link>
                 </div>

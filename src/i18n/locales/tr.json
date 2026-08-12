@@ -66,5 +66,102 @@
     "title": "Sayfa Bulunamadı",
     "description": "Aradığınız sayfa kaldırılmış, taşınmış veya hiç oluşturulmamış olabilir.",
     "button": "Ana Sayfaya Dön"
-  }
+  },
+  "home": {
+    "eyebrow": "SkyRoute",
+    "title": "Uçuşunu bul, yolculuğuna başla",
+    "description": "Giriş yapmadan uçuşları ara ve sana uygun yolculuğu seç.",
+    "departure": "Nereden?",
+    "destination": "Nereye?",
+    "date": "Tarih",
+    "searchButton": "Uçuş Ara",
+    "departurePlaceholder": "İstanbul",
+    "destinationPlaceholder": "Ankara",
+    "errors": {
+      "required": "Kalkış, varış ve tarih alanlarını doldurmalısınız."
+    }
+  },
+  "flightResults": {
+    "eyebrow": "Uçuş Arama",
+    "title": "Uygun Uçuşlar",
+    "description": "Arama kriterlerinize uygun uçuşlar burada listelenecektir.",
+    "departure": "Kalkış",
+    "destination": "Varış",
+    "date": "Tarih",
+    "flightNo": "Uçuş No",
+    "selectFlight": "Uçuşu Seç",
+    "waitingTitle": "Uçuş sonuçları hazırlanıyor",
+    "waitingDescription": "Backend uçuş servisi hazır olduğunda gerçek uçuşlar bu alanda gösterilecektir.",
+    "searchAgain": "Yeni Arama Yap",
+    "backHome": "Ana Sayfa",
+    "noFlights": "Arama kriterlerinize uygun uçuş bulunamadı.",
+    "errors": {
+      "fetchFailed": "Uçuş bilgileri alınırken bir hata oluştu."
+    }
+  },
+  "seatSelection": {
+    "eyebrow": "Koltuk Seçimi",
+    "title": "Koltuğunu Seç",
+    "description": "Müsait koltuklardan birini seçerek yolcu bilgileri adımına devam edebilirsiniz.",
+    "home": "Ana Sayfa",
+    "flight": "Uçuş",
+    "route": "Rota",
+    "date": "Tarih",
+    "chooseSeat": "Müsait Koltuklar",
+    "available": "Müsait",
+    "selected": "Seçili",
+    "unavailable": "Dolu",
+    "summaryTitle": "Seçim Özeti",
+    "selectedSeat": "Seçilen Koltuk",
+    "seatType": "Koltuk Tipi",
+    "continue": "Yolcu Bilgilerine Devam Et",
+    "noSeatSelected": "Devam etmek için müsait bir koltuk seçin."
+  },
+  "passengerInfo": {
+    "eyebrow": "Yolcu Bilgileri",
+    "title": "Yolcu Bilgilerini Gir",
+    "description": "Bilet işlemini tamamlamak için yolcu bilgilerini doldurun.",
+    "home": "Ana Sayfa",
+    "flight": "Uçuş",
+    "route": "Rota",
+    "seat": "Koltuk",
+    "formTitle": "Yolcu Bilgileri",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "continue": "Bilet Özetine Devam Et",
+    "errors": {
+      "required": "Tüm yolcu bilgilerini doldurmalısınız."
+    }
+  },"bookingSummary": {
+  "eyebrow": "Bilet Özeti",
+  "title": "Rezervasyon Bilgilerini Kontrol Et",
+  "description": "Satın alma işleminden önce uçuş ve yolcu bilgilerinizi kontrol edin.",
+  "home": "Ana Sayfa",
+  "flightTitle": "Uçuş Bilgileri",
+  "passengerTitle": "Yolcu Bilgileri",
+  "flight": "Uçuş",
+  "route": "Rota",
+  "date": "Tarih",
+  "seat": "Koltuk",
+  "name": "Ad Soyad",
+  "email": "E-posta",
+  "phone": "Telefon",
+  "confirmTitle": "Rezervasyonu Onayla",
+  "confirmDescription": "Bilgileriniz doğruysa bilet işlemini tamamlamak için devam edin.",
+  "confirmButton": "Bileti Onayla"
+},"bookingSuccess": {
+  "eyebrow": "Rezervasyon Tamamlandı",
+  "title": "Bilet İşleminiz Başarıyla Tamamlandı",
+  "description": "Rezervasyonunuz başarıyla oluşturuldu. Uçuş ve bilet bilgileriniz sisteme kaydedildi.",
+  "home": "Ana Sayfa",
+  "passenger": "Yolcu",
+  "flight": "Uçuş",
+  "route": "Rota",
+  "date": "Tarih",
+  "seat": "Koltuk",
+  "newSearch": "Yeni Uçuş Ara",
+  "login": "Giriş Yap"
+}
 }
