@@ -1,41 +1,58 @@
+// Form verilerini state'te tutmak ve form gönderme event tipini kullanmak için alınır.
 import { useState, type FormEvent } from "react";
+
+// Sayfalar arası bağlantı ve kod ile yönlendirme yapmak için kullanılır.
 import { Link, useNavigate } from "react-router-dom";
+
+// Sayfadaki metinlerin Türkçe/İngilizce gösterilmesini sağlar.
 import { useTranslation } from "react-i18next";
 
+// Dil değiştirme bileşenini kullanır.
 import LanguageSwitcher from "../components/LanguageSwitcher";
+
+// AuthContext içindeki register fonksiyonuna erişmek için kullanılır.
 import { useAuth } from "../hooks/useAuth";
+
+// Login ve Register sayfalarının stil dosyasıdır.
 import "./AuthPage.css";
 
 /*
- * Yeni kullanıcıların kayıt olmasını sağlar.
- * Form doğrulandıktan sonra register fonksiyonu çağrılır.
+ * Yeni kullanıcının kayıt olduğu sayfadır.
+ * Form kontrollerinden sonra bilgileri backend'e gönderir.
  */
 export default function RegisterPage() {
-    /* Kayıt sonrası login sayfasına yönlendirme yapmak için kullanılır. */
+    // Kayıt başarılı olduğunda login sayfasına yönlendirmek için kullanılır.
     const navigate = useNavigate();
 
-    /* AuthContext içindeki kayıt fonksiyonuna erişir. */
+    // AuthContext içindeki register fonksiyonunu alır.
     const { register } = useAuth();
 
-    /* Metinleri seçili dile göre getirir. */
+    // Çeviri dosyalarındaki metinlere ulaşmayı sağlar.
     const { t } = useTranslation();
 
-    /* Form alanları ve ekran durumları state içinde tutulur. */
+    // Form alanlarındaki kullanıcı bilgilerini state içinde tutar.
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordAgain, setPasswordAgain] = useState("");
+
+    // Hata mesajını ve kayıt işleminin devam edip etmediğini tutar.
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    /* Form gönderildiğinde doğrulama ve kayıt işlemini yönetir. */
+    /*
+     * Kullanıcı kayıt formunu gönderdiğinde çalışır.
+     * Önce formu kontrol eder, ardından register işlemini başlatır.
+     */
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        /* Formun sayfayı yenilemesini engeller. */
+        // Form gönderildiğinde sayfanın yenilenmesini engeller.
         event.preventDefault();
+
+        // Önceden oluşmuş hata mesajını temizler.
         setError("");
 
-        /* Herhangi bir alan boşsa kayıt işlemi durdurulur. */
+        // Alanlardan herhangi biri boşsa kayıt işlemini durdurur.
         if (
             !firstName.trim() ||
             !lastName.trim() ||
@@ -47,23 +64,23 @@ export default function RegisterPage() {
             return;
         }
 
-        /* Şifrenin en az 6 karakter olması kontrol edilir. */
+        // Şifrenin en az 6 karakter olmasını kontrol eder.
         if (password.length < 6) {
             setError(t("auth.errors.passwordTooShort"));
             return;
         }
 
-        /* İki şifre alanının eşleşmesi kontrol edilir. */
+        // Girilen iki şifrenin aynı olup olmadığını kontrol eder.
         if (password !== passwordAgain) {
             setError(t("auth.errors.passwordMismatch"));
             return;
         }
 
         try {
-            /* İşlem sırasında butonu devre dışı bırakır. */
+            // Backend işlemi devam ederken loading durumunu açar.
             setLoading(true);
 
-            /* AuthContext içindeki register fonksiyonunu çağırır. */
+            // Kullanıcı bilgilerini AuthContext üzerinden backend'e gönderir.
             await register({
                 firstName: firstName.trim(),
                 lastName: lastName.trim(),
@@ -71,26 +88,32 @@ export default function RegisterPage() {
                 password,
             });
 
-            /* Kayıt başarılıysa login sayfasına yönlendirir. */
+            // Kayıt başarılı olduğunda kullanıcıyı login sayfasına gönderir.
             navigate("/login", { replace: true });
+
         } catch {
-            /* Kayıt başarısız olursa hata mesajı gösterilir. */
+            // Backend kayıt işlemini reddederse hata mesajı gösterir.
             setError(t("auth.errors.registerFailed"));
+
         } finally {
-            /* İşlem tamamlandığında loading kapatılır. */
+            // İşlem başarılı veya başarısız olsa da loading durumunu kapatır.
             setLoading(false);
         }
     };
 
     return (
         <main className="auth-page">
-            {/* Türkçe ve İngilizce arasında geçiş sağlar. */}
+
+            {/* Kullanıcının Türkçe ve İngilizce arasında geçiş yapmasını sağlar. */}
             <LanguageSwitcher variant="floating" />
 
             <section className="auth-container">
-                {/* Uygulama tanıtımının bulunduğu sol panel. */}
+
+                {/* Sol tarafta uygulamanın tanıtım bilgilerini gösterir. */}
                 <div className="auth-brand-panel">
                     <div className="auth-brand-content">
+
+                        {/* Dekoratif uçak simgesi. */}
                         <div
                             className="auth-plane-icon"
                             aria-hidden="true"
@@ -98,23 +121,27 @@ export default function RegisterPage() {
                             ✈
                         </div>
 
+                        {/* Uygulama adını gösterir. */}
                         <p className="auth-brand-name">
                             {t("common.appName")}
                         </p>
 
+                        {/* Karşılama başlığını gösterir. */}
                         <h2 className="auth-brand-title">
                             {t("auth.welcomeTitle")}
                         </h2>
 
+                        {/* Uygulamanın kısa açıklamasını gösterir. */}
                         <p className="auth-brand-description">
                             {t("auth.welcomeDescription")}
                         </p>
                     </div>
                 </div>
 
-                {/* Kayıt formunun bulunduğu sağ panel. */}
+                {/* Sağ tarafta kayıt formunu gösterir. */}
                 <div className="auth-form-panel">
                     <div className="auth-form-wrapper">
+
                         <h1 className="auth-title">
                             {t("auth.registerTitle")}
                         </h1>
@@ -123,10 +150,12 @@ export default function RegisterPage() {
                             {t("auth.registerSubtitle")}
                         </p>
 
+                        {/* Form gönderildiğinde handleSubmit fonksiyonu çalışır. */}
                         <form
                             className="auth-form"
                             onSubmit={handleSubmit}
                         >
+
                             {/* Ad ve soyad alanları. */}
                             <div className="auth-row">
                                 <div className="auth-field">
@@ -141,8 +170,13 @@ export default function RegisterPage() {
                                         className="auth-input"
                                         id="firstName"
                                         type="text"
+
+                                        // Input değerini firstName state'ine bağlar.
                                         value={firstName}
+
                                         autoComplete="given-name"
+
+                                        // Kullanıcı yazdıkça firstName state'ini günceller.
                                         onChange={(event) =>
                                             setFirstName(event.target.value)
                                         }
@@ -163,6 +197,8 @@ export default function RegisterPage() {
                                         type="text"
                                         value={lastName}
                                         autoComplete="family-name"
+
+                                        // Kullanıcı yazdıkça lastName state'ini günceller.
                                         onChange={(event) =>
                                             setLastName(event.target.value)
                                         }
@@ -170,7 +206,7 @@ export default function RegisterPage() {
                                 </div>
                             </div>
 
-                            {/* E-posta alanı. */}
+                            {/* Kullanıcının e-posta bilgisini alır. */}
                             <div className="auth-field">
                                 <label
                                     className="auth-label"
@@ -188,13 +224,15 @@ export default function RegisterPage() {
                                         "auth.emailPlaceholder",
                                     )}
                                     autoComplete="email"
+
+                                    // Kullanıcı yazdıkça email state'ini günceller.
                                     onChange={(event) =>
                                         setEmail(event.target.value)
                                     }
                                 />
                             </div>
 
-                            {/* Şifre ve şifre tekrar alanları. */}
+                            {/* Şifre ve şifre tekrar alanlarını gösterir. */}
                             <div className="auth-row">
                                 <div className="auth-field">
                                     <label
@@ -210,6 +248,8 @@ export default function RegisterPage() {
                                         type="password"
                                         value={password}
                                         autoComplete="new-password"
+
+                                        // Girilen şifreyi password state'ine kaydeder.
                                         onChange={(event) =>
                                             setPassword(event.target.value)
                                         }
@@ -230,6 +270,8 @@ export default function RegisterPage() {
                                         type="password"
                                         value={passwordAgain}
                                         autoComplete="new-password"
+
+                                        // Tekrar girilen şifreyi ayrı state'te tutar.
                                         onChange={(event) =>
                                             setPasswordAgain(
                                                 event.target.value,
@@ -239,7 +281,7 @@ export default function RegisterPage() {
                                 </div>
                             </div>
 
-                            {/* Hata varsa kullanıcıya gösterilir. */}
+                            {/* Bir hata oluşmuşsa kullanıcıya gösterir. */}
                             {error && (
                                 <p
                                     className="auth-error"
@@ -249,19 +291,20 @@ export default function RegisterPage() {
                                 </p>
                             )}
 
-                            {/* İşlem sırasında buton pasif olur. */}
+                            {/* Kayıt isteği devam ederken buton tekrar kullanılamaz. */}
                             <button
                                 className="auth-submit-button"
                                 type="submit"
                                 disabled={loading}
                             >
+                                {/* İşlem durumuna göre buton yazısını değiştirir. */}
                                 {loading
                                     ? t("auth.registering")
                                     : t("auth.registerButton")}
                             </button>
                         </form>
 
-                        {/* Login sayfasına geçiş bağlantısı. */}
+                        {/* Zaten hesabı olan kullanıcıyı LoginPage'e yönlendirir. */}
                         <p className="auth-footer">
                             {t("auth.hasAccount")}{" "}
                             <Link

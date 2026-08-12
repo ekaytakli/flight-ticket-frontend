@@ -1,17 +1,23 @@
 /*
- * Backend'deki Seat entity'sinin frontend tarafındaki
- * karşılığını temsil eder.
+ * Backend'deki SeatResponseDto'dan gelen
+ * koltuk verisinin frontend tarafındaki yapısını tanımlar.
  */
 export interface Seat {
-    /* Koltuğun benzersiz kimliği. */
+    // Koltuğun benzersiz kimliği.
     id: number;
 
-    /* Koltuk numarası. Örneğin: 12A */
+    // Koltuk numarası. Örnek: 12A
     seatNumber: string;
 
-    /* Koltuk tipi. */
+    // Koltuk tipi. Örnek: Window, Middle, Aisle
     seatType: string;
 
-    /* Koltuğun satın alınabilir durumda olup olmadığını belirtir. */
+    // Koltuğun müsait olup olmadığını belirtir.
     isAvailable: boolean;
+
+    // Koltuğun fiyatını tutar.
+    price: number;
+
+    // Koltuğun bağlı olduğu uçuşun ID bilgisidir.
+    flightId: number;
 }

@@ -1,11 +1,12 @@
 /*
  * Sistemde kullanılabilecek kullanıcı rollerini tanımlar.
- * Bu alan yalnızca Admin veya Customer olabilir.
  */
-export type UserRole = "ROLE_ADMIN" | "ROLE_CUSTOMER";
+export type UserRole =
+    | "ROLE_ADMIN"
+    | "ROLE_CUSTOMER";
 
 /*
- * Giriş yapan kullanıcının temel bilgilerini tutar.
+ * Frontend tarafında oturum açmış kullanıcıyı temsil eder.
  */
 export interface User {
     // Kullanıcının e-posta adresi.
@@ -16,37 +17,46 @@ export interface User {
 }
 
 /*
- * Login işleminde gönderilecek verileri tanımlar.
+ * Login sırasında backend'e gönderilecek bilgileri tanımlar.
  */
 export interface LoginRequest {
-    // Kullanıcının e-posta adresi.
     email: string;
-
-    // Kullanıcının şifresi.
     password: string;
 }
 
 /*
- * Kayıt işleminde gönderilecek verileri tanımlar.
+ * Register sırasında backend'e gönderilecek bilgileri tanımlar.
  */
 export interface RegisterRequest {
-    // Kullanıcının adı.
     firstName: string;
-
-    // Kullanıcının soyadı.
     lastName: string;
-
-    // Kullanıcının e-posta adresi.
     email: string;
-
-    // Kullanıcının şifresi.
     password: string;
 }
 
 /*
- * Başarılı girişten sonra backend'den dönecek cevabı tanımlar.
+ * Backend'in login ve register sonrasında
+ * döndürdüğü cevabı temsil eder.
  */
 export interface AuthResponse {
-    // Kullanıcıya verilen JWT token.
+    // Backend tarafından oluşturulan JWT token.
     token: string;
+}
+
+/*
+ * Backend JWT token'ı içinde bulunan
+ * temel bilgilerin yapısını tanımlar.
+ */
+export interface JwtPayload {
+    // Token'ın ait olduğu kullanıcı e-postasıdır.
+    sub: string;
+
+    // Kullanıcının backend tarafından verilen rolleridir.
+    roles: string[];
+
+    // Token'ın oluşturulma zamanı.
+    iat?: number;
+
+    // Token'ın geçerlilik bitiş zamanı.
+    exp?: number;
 }
