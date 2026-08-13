@@ -1,6 +1,3 @@
-// Bilet oluşturma sırasında loading ve hata durumunu yönetmek için kullanılır.
-import { useState } from "react";
-
 // Sayfalar arası bağlantı, yönlendirme ve URL parametrelerini okumak için kullanılır.
 import {
     Link,
@@ -11,24 +8,23 @@ import {
 // Sayfadaki metinleri seçilen dile göre göstermek için kullanılır.
 import { useTranslation } from "react-i18next";
 
-// Backend'de gerçek bilet oluşturan API fonksiyonudur.
-import { createTicket } from "../api/ticketApi";
-
 // Türkçe / İngilizce dil değiştirme bileşenidir.
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
-// Sayfanın stil dosyasıdır.
+// Rezervasyon özeti sayfasının stil dosyasıdır.
 import "./BookingSummaryPage.css";
 
 /*
- * Uçuş, koltuk ve yolcu bilgilerini kullanıcıya gösterir.
- * Kullanıcı onay verdiğinde backend'de gerçek bilet oluşturur.
+ * Uçuş, koltuk ve yolcu bilgilerini kullanıcıya
+ * son kez kontrol etmesi için gösterir.
+ *
+ * Kullanıcı devam ettiğinde ödeme sayfasına yönlendirir.
  */
 export default function BookingSummaryPage() {
     // Çeviri dosyalarındaki metinlere erişir.
     const { t } = useTranslation();
 
-    // Başarı sayfasına yönlendirme yapmak için kullanılır.
+    // PaymentPage'e yönlendirme yapmak için kullanılır.
     const navigate = useNavigate();
 
     // Önceki sayfadan URL ile gelen bilgileri okumak için kullanılır.
@@ -73,93 +69,48 @@ export default function BookingSummaryPage() {
     const phone =
         searchParams.get("phone") ?? "";
 
-    // Ticket oluşturma isteğinin devam edip etmediğini tutar.
-    const [loading, setLoading] =
-        useState(false);
-
-    // Ticket oluşturma sırasında oluşan hata mesajını tutar.
-    const [error, setError] =
-        useState("");
-
     /*
-     * Kullanıcı Bileti Onayla dediğinde
-     * backend'e gerçek ticket oluşturma isteği gönderir.
+     * Kullanıcı "Ödemeye Geç" dediğinde
+     * mevcut rezervasyon bilgilerini PaymentPage'e taşır.
      */
-    const handleConfirm = async () => {
-        // Uçuş veya koltuk ID eksikse işlem yapılmaz.
+    const handlePayment = () => {
+        // Uçuş veya koltuk bilgisi eksikse işlem yapılmaz.
         if (!flightId || !seatId) {
-            setError(
-                "Uçuş veya koltuk bilgisi eksik.",
-            );
             return;
         }
 
-        try {
-            // İstek başlamadan önce loading açılır.
-            setLoading(true);
+        /*
+         * Uçuş, koltuk ve yolcu bilgilerini
+         * ödeme sayfasına aktarılacak URL parametrelerine dönüştürür.
+         */
+        const params = new URLSearchParams({
+            flightId,
+            flightNo,
+            from: departure,
+            to: destination,
+            date,
+            seatId,
+            seatNumber,
+            seatPrice,
+            firstName,
+            lastName,
+            email,
+            phone,
+        });
 
-            // Önceki hata mesajı temizlenir.
-            setError("");
-
-            /*
-             * Backend'e flightId ve seatId gönderilerek
-             * gerçek ticket kaydı oluşturulur.
-             */
-            const ticket =
-                await createTicket({
-                    flightId:
-                        Number(flightId),
-                    seatId:
-                        Number(seatId),
-                });
-
-            /*
-             * Ticket başarıyla oluşturulursa
-             * backend'den gelen PNR ile success sayfasına geçilir.
-             */
-            const params =
-                new URLSearchParams({
-                    flightNo,
-                    from: departure,
-                    to: destination,
-                    date,
-                    seatNumber,
-                    seatPrice,
-                    firstName,
-                    lastName,
-                    email,
-                    phone,
-
-                    // Backend'in oluşturduğu gerçek PNR kodunu taşır.
-                    pnrKodu:
-                    ticket.pnrKodu,
-                });
-
-            // Kullanıcıyı başarı sayfasına yönlendirir.
-            navigate(
-                `/booking-success?${params.toString()}`,
-            );
-        } catch (error) {
-            // Gerçek backend hatasını geliştirici konsolunda gösterir.
-            console.error(
-                "Bilet oluşturulurken hata:",
-                error,
-            );
-
-            // Kullanıcıya hata mesajı gösterir.
-            setError(
-                "Bilet oluşturulurken bir hata oluştu.",
-            );
-        } finally {
-            // İşlem tamamlandığında loading kapatılır.
-            setLoading(false);
-        }
+        // Kullanıcıyı ödeme sayfasına yönlendirir.
+        navigate(
+            `/payment?${params.toString()}`,
+        );
     };
 
     return (
         <main className="booking-summary-page">
+
             {/* Sayfanın üst menüsüdür. */}
             <header className="booking-summary-header">
+
+                {/* Logoya basıldığında ana sayfaya döner. */}
                 <Link
                     to="/"
                     className="booking-summary-logo"
@@ -168,9 +119,11 @@ export default function BookingSummaryPage() {
                 </Link>
 
                 <div className="booking-summary-actions">
+
+                    {/* Dil değiştirme butonlarını gösterir. */}
                     <LanguageSwitcher />
 
-                    {/* Kullanıcıyı ana sayfaya götürür. */}
+                    {/* Kullanıcıyı ana sayfaya yönlendirir. */}
                     <Link
                         to="/"
                         className="booking-summary-home-button"
@@ -205,7 +158,7 @@ export default function BookingSummaryPage() {
                     </p>
                 </div>
 
-                {/* Uçuş ve yolcu bilgilerini iki kart halinde gösterir. */}
+                {/* Uçuş ve yolcu bilgilerini iki ayrı kartta gösterir. */}
                 <div className="booking-summary-grid">
 
                     {/* Uçuş bilgilerinin bulunduğu karttır. */}
@@ -216,6 +169,7 @@ export default function BookingSummaryPage() {
                             )}
                         </h2>
 
+                        {/* Uçuş numarasını gösterir. */}
                         <div className="booking-summary-row">
                             <span>
                                 {t(
@@ -228,6 +182,7 @@ export default function BookingSummaryPage() {
                             </strong>
                         </div>
 
+                        {/* Uçuş rotasını gösterir. */}
                         <div className="booking-summary-row">
                             <span>
                                 {t(
@@ -241,6 +196,7 @@ export default function BookingSummaryPage() {
                             </strong>
                         </div>
 
+                        {/* Uçuş tarihini gösterir. */}
                         <div className="booking-summary-row">
                             <span>
                                 {t(
@@ -253,6 +209,7 @@ export default function BookingSummaryPage() {
                             </strong>
                         </div>
 
+                        {/* Seçilen koltuğu gösterir. */}
                         <div className="booking-summary-row">
                             <span>
                                 {t(
@@ -265,18 +222,18 @@ export default function BookingSummaryPage() {
                             </strong>
                         </div>
 
-                        {/* Koltuk fiyatını gösterir. */}
-                        {seatPrice && (
-                            <div className="booking-summary-row">
-                                <span>
-                                    Fiyat
-                                </span>
+                        {/* Koltuğun backend'den gelen fiyatını gösterir. */}
+                        <div className="booking-summary-row">
+                            <span>
+                                Fiyat
+                            </span>
 
-                                <strong>
-                                    {seatPrice} TL
-                                </strong>
-                            </div>
-                        )}
+                            <strong>
+                                {seatPrice
+                                    ? `${seatPrice} TL`
+                                    : "-"}
+                            </strong>
+                        </div>
                     </section>
 
                     {/* Yolcu bilgilerinin bulunduğu karttır. */}
@@ -287,6 +244,7 @@ export default function BookingSummaryPage() {
                             )}
                         </h2>
 
+                        {/* Yolcunun ad ve soyadını gösterir. */}
                         <div className="booking-summary-row">
                             <span>
                                 {t(
@@ -299,6 +257,7 @@ export default function BookingSummaryPage() {
                             </strong>
                         </div>
 
+                        {/* Yolcunun e-posta adresini gösterir. */}
                         <div className="booking-summary-row">
                             <span>
                                 {t(
@@ -311,6 +270,7 @@ export default function BookingSummaryPage() {
                             </strong>
                         </div>
 
+                        {/* Yolcunun telefon numarasını gösterir. */}
                         <div className="booking-summary-row">
                             <span>
                                 {t(
@@ -325,44 +285,24 @@ export default function BookingSummaryPage() {
                     </section>
                 </div>
 
-                {/* Kullanıcının bileti onayladığı alandır. */}
+                {/* Kullanıcının ödeme aşamasına geçtiği bölümdür. */}
                 <section className="booking-summary-confirmation">
                     <h2>
-                        {t(
-                            "bookingSummary.confirmTitle",
-                        )}
+                        Rezervasyonu Tamamla
                     </h2>
 
                     <p>
-                        {t(
-                            "bookingSummary.confirmDescription",
-                        )}
+                        Rezervasyon bilgilerinizi kontrol ettikten
+                        sonra ödeme aşamasına geçebilirsiniz.
                     </p>
 
-                    {/* Backend hatası oluşursa kullanıcıya gösterir. */}
-                    {error && (
-                        <p
-                            className="booking-summary-error"
-                            role="alert"
-                        >
-                            {error}
-                        </p>
-                    )}
-
-                    {/* Onay verildiğinde gerçek Ticket API isteğini başlatır. */}
+                    {/* Kullanıcıyı PaymentPage'e yönlendirir. */}
                     <button
                         type="button"
                         className="booking-confirm-button"
-                        onClick={handleConfirm}
-
-                        // İstek devam ederken tekrar tıklanmasını engeller.
-                        disabled={loading}
+                        onClick={handlePayment}
                     >
-                        {loading
-                            ? "Bilet oluşturuluyor..."
-                            : t(
-                                "bookingSummary.confirmButton",
-                            )}
+                        Ödemeye Geç
                     </button>
                 </section>
             </section>
