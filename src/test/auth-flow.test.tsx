@@ -24,10 +24,46 @@ vi.mock("../api/authApi", () => ({
     registerRequest: vi.fn(),
 }));
 
+/*
+ * AuthContext artık JWT içindeki sub ve roles alanlarını okuduğu için
+ * testlerde gerçek JWT yapısına benzeyen sahte token oluşturur.
+ */
+function createTestJwt(
+    email: string,
+    role: "ROLE_ADMIN" | "ROLE_CUSTOMER",
+) {
+    // JWT header bilgisini oluşturur.
+    const header = {
+        alg: "HS256",
+        typ: "JWT",
+    };
+
+    // AuthContext'in ihtiyaç duyduğu kullanıcı bilgilerini oluşturur.
+    const payload = {
+        sub: email,
+        roles: [role],
+    };
+
+    /*
+     * JSON verilerini Base64 formatına dönüştürür.
+     * Testte imza doğrulaması yapılmadığı için sahte signature yeterlidir.
+     */
+    const encodedHeader = btoa(
+        JSON.stringify(header),
+    );
+
+    const encodedPayload = btoa(
+        JSON.stringify(payload),
+    );
+
+    // JWT'nin header.payload.signature yapısını döndürür.
+    return `${encodedHeader}.${encodedPayload}.test-signature`;
+}
+
 describe("authentication flow", () => {
     /*
-     * Her testten önce önceki testten kalan mock
-     * ve localStorage bilgileri temizlenir.
+     * Her testten önce önceki testten kalan
+     * mock ve localStorage bilgileri temizlenir.
      */
     beforeEach(() => {
         vi.clearAllMocks();
@@ -64,12 +100,18 @@ describe("authentication flow", () => {
         async () => {
             const user = userEvent.setup();
 
+            // Admin rolü içeren sahte JWT oluşturur.
+            const adminToken = createTestJwt(
+                "admin@flight.com",
+                "ROLE_ADMIN",
+            );
+
             /*
-             * Backend başarılı giriş yapmış gibi
-             * test JWT tokenı döndürür.
+             * Backend başarılı admin login yapmış
+             * gibi JWT token döndürür.
              */
             vi.mocked(loginRequest).mockResolvedValue({
-                token: "test-admin-jwt",
+                token: adminToken,
             });
 
             renderApp("/login");
@@ -90,6 +132,7 @@ describe("authentication flow", () => {
                 }),
             );
 
+            // Backend login fonksiyonunun doğru bilgilerle çağrıldığını kontrol eder.
             expect(
                 loginRequest,
             ).toHaveBeenCalledWith({
@@ -97,15 +140,17 @@ describe("authentication flow", () => {
                 password: "admin123",
             });
 
+            // Admin rolü doğru okunursa AdminDashboard açılmalıdır.
             expect(
                 await screen.findByRole("heading", {
                     name: "Yönetim Merkezine Hoş Geldin",
                 }),
             ).toBeInTheDocument();
 
+            // Backend'den gelen token'ın localStorage'a kaydedildiğini kontrol eder.
             expect(
                 localStorage.getItem("token"),
-            ).toBe("test-admin-jwt");
+            ).toBe(adminToken);
         },
     );
 
@@ -114,8 +159,18 @@ describe("authentication flow", () => {
         async () => {
             const user = userEvent.setup();
 
+            // Customer rolü içeren sahte JWT oluşturur.
+            const customerToken = createTestJwt(
+                "customer@test.com",
+                "ROLE_CUSTOMER",
+            );
+
+            /*
+             * Backend başarılı customer login yapmış
+             * gibi JWT token döndürür.
+             */
             vi.mocked(loginRequest).mockResolvedValue({
-                token: "test-customer-jwt",
+                token: customerToken,
             });
 
             renderApp("/login");
@@ -136,6 +191,7 @@ describe("authentication flow", () => {
                 }),
             );
 
+            // Backend login fonksiyonunun doğru bilgilerle çağrıldığını kontrol eder.
             expect(
                 loginRequest,
             ).toHaveBeenCalledWith({
@@ -143,15 +199,17 @@ describe("authentication flow", () => {
                 password: "123456",
             });
 
+            // Customer rolü doğru okunursa CustomerDashboard açılmalıdır.
             expect(
                 await screen.findByRole("heading", {
                     name: "Yeni Bir Yolculuk Planla",
                 }),
             ).toBeInTheDocument();
 
+            // Customer token'ının localStorage'a kaydedildiğini kontrol eder.
             expect(
                 localStorage.getItem("token"),
-            ).toBe("test-customer-jwt");
+            ).toBe(customerToken);
         },
     );
 
@@ -212,6 +270,7 @@ describe("authentication flow", () => {
                 password: "123456",
             });
 
+            // Kayıt başarılı olunca tekrar LoginPage açılmalıdır.
             expect(
                 await screen.findByRole("heading", {
                     name: "Giriş Yap",

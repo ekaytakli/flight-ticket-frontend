@@ -1,30 +1,30 @@
 /*
- * Backend'deki Flight entity'sinden frontend'e
- * gelecek uçuş bilgilerini temsil eder.
+ * Backend'deki Flight entity'sinden gelecek
+ * uçuş verilerinin frontend tarafındaki yapısını tanımlar.
  */
 export interface Flight {
-    /* Uçuşun benzersiz kimliği. */
+    // Uçuşun benzersiz kimliği.
     id: number;
 
-    /* Uçuş numarası. Örneğin: TK101 */
+    // Uçuş numarası. Örnek: TK101
     flightNo: string;
 
-    /* Uçağın kalkacağı şehir/havalimanı. */
+    // Kalkış noktası.
     departurePoint: string;
 
-    /* Uçağın gideceği şehir/havalimanı. */
+    // Varış noktası.
     destinationPoint: string;
 
-    /* Uçağın kalkış tarih ve saati. */
+    // Kalkış tarih ve saati.
     departureTime: string;
 
-    /* Uçağın varış tarih ve saati. */
+    // Varış tarih ve saati.
     destinationTime: string;
 }
 
 /*
- * Ana sayfadaki uçuş arama formunda kullanılan
- * arama kriterlerini temsil eder.
+ * Ana sayfadaki uçuş arama formunda
+ * kullanılan arama kriterlerini tanımlar.
  */
 export interface FlightSearchParams {
     departurePoint: string;

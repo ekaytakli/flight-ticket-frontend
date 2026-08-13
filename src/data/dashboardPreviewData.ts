@@ -1,6 +1,14 @@
 import type { Flight } from "../types/flight";
 import type { Seat } from "../types/seat";
-import type { Ticket } from "../types/ticket";
+
+/* MyTickets ekranında backend bağlanana kadar kullanacağımız geçici bilet yapısı. */
+interface PreviewTicket {
+    id: number;
+    pnrKodu: string;
+    date: string;
+    flight: Flight;
+    seat: Seat;
+}
 
 /* Backend hazır olana kadar yönetim ekranlarının görünümünü dolduran örnek uçuşlar. */
 export const previewFlights: Flight[] = [
@@ -33,25 +41,95 @@ export const previewFlights: Flight[] = [
 /* Koltuk yönetimi sayfasında gösterilecek geçici koltuk verileri. */
 export const previewSeatsByFlight: Record<number, Seat[]> = {
     1: [
-        { id: 11, seatNumber: "1A", seatType: "business", isAvailable: true },
-        { id: 12, seatNumber: "1B", seatType: "business", isAvailable: false },
-        { id: 13, seatNumber: "12A", seatType: "economy", isAvailable: true },
-        { id: 14, seatNumber: "12B", seatType: "economy", isAvailable: true },
+        {
+            id: 11,
+            seatNumber: "1A",
+            seatType: "business",
+            isAvailable: true,
+            price: 2450,
+            flightId: 1,
+        },
+        {
+            id: 12,
+            seatNumber: "1B",
+            seatType: "business",
+            isAvailable: false,
+            price: 2450,
+            flightId: 1,
+        },
+        {
+            id: 13,
+            seatNumber: "12A",
+            seatType: "economy",
+            isAvailable: true,
+            price: 1450,
+            flightId: 1,
+        },
+        {
+            id: 14,
+            seatNumber: "12B",
+            seatType: "economy",
+            isAvailable: true,
+            price: 1450,
+            flightId: 1,
+        },
     ],
     2: [
-        { id: 21, seatNumber: "2A", seatType: "business", isAvailable: true },
-        { id: 22, seatNumber: "8C", seatType: "economy", isAvailable: false },
-        { id: 23, seatNumber: "9A", seatType: "economy", isAvailable: true },
+        {
+            id: 21,
+            seatNumber: "2A",
+            seatType: "business",
+            isAvailable: true,
+            price: 2200,
+            flightId: 2,
+        },
+        {
+            id: 22,
+            seatNumber: "8C",
+            seatType: "economy",
+            isAvailable: false,
+            price: 1250,
+            flightId: 2,
+        },
+        {
+            id: 23,
+            seatNumber: "9A",
+            seatType: "economy",
+            isAvailable: true,
+            price: 1250,
+            flightId: 2,
+        },
     ],
     3: [
-        { id: 31, seatNumber: "3A", seatType: "business", isAvailable: false },
-        { id: 32, seatNumber: "15A", seatType: "economy", isAvailable: true },
-        { id: 33, seatNumber: "15B", seatType: "economy", isAvailable: true },
+        {
+            id: 31,
+            seatNumber: "3A",
+            seatType: "business",
+            isAvailable: false,
+            price: 2300,
+            flightId: 3,
+        },
+        {
+            id: 32,
+            seatNumber: "15A",
+            seatType: "economy",
+            isAvailable: true,
+            price: 1350,
+            flightId: 3,
+        },
+        {
+            id: 33,
+            seatNumber: "15B",
+            seatType: "economy",
+            isAvailable: true,
+            price: 1350,
+            flightId: 3,
+        },
     ],
 };
 
 /* Bilet servisi bağlanınca bu örnek kayıtların yerini backend verileri alacak. */
-export const previewTickets: Ticket[] = [
+export const previewTickets: PreviewTicket[] = [
     {
         id: 1,
         pnrKodu: "SKY7F2",

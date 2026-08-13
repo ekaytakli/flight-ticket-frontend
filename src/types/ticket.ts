@@ -1,23 +1,35 @@
-import type { Flight } from "./flight";
-import type { Seat } from "./seat";
+/*
+ * Backend'e yeni bilet oluştururken
+ * gönderilecek bilgileri tanımlar.
+ */
+export interface CreateTicketRequest {
+    // Seçilen uçuşun ID bilgisidir.
+    flightId: number;
+
+    // Seçilen koltuğun ID bilgisidir.
+    seatId: number;
+}
 
 /*
- * Backend'deki Ticket entity'sinin frontend tarafındaki
- * temel karşılığını temsil eder.
+ * Backend bilet oluşturduktan sonra
+ * frontend'e dönen bilgileri tanımlar.
  */
-export interface Ticket {
-    /* Biletin benzersiz kimliği. */
+export interface TicketResponse {
+    // Oluşturulan biletin ID bilgisidir.
     id: number;
 
-    /* Bilete ait PNR kodu. */
+    // Backend tarafından üretilen PNR kodudur.
     pnrKodu: string;
 
-    /* Biletin oluşturulma tarihi. */
+    // Biletin oluşturulduğu tarih ve saattir.
     date: string;
 
-    /* Biletin ait olduğu uçuş. */
-    flight: Flight;
+    // Biletin ait olduğu uçuşun ID bilgisidir.
+    flightId: number;
 
-    /* Bilet için seçilen koltuk. */
-    seat: Seat;
+    // Seçilen koltuğun ID bilgisidir.
+    seatId: number;
+
+    // Seçilen koltuğun numarasıdır.
+    seatNumber: string;
 }

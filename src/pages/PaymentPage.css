@@ -1,0 +1,270 @@
+/* Ödeme sayfasının genel arka planını ve minimum yüksekliğini belirler. */
+.payment-page {
+    min-height: 100vh;
+    background: #f5f7fb;
+    color: #1f2937;
+}
+
+/* Sayfanın üst menüsünü düzenler. */
+.payment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* SkyRoute logosunun görünümünü belirler. */
+.payment-logo {
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e3a8a;
+}
+
+/* Header içindeki sağ taraf işlemlerini yan yana dizer. */
+.payment-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Ana sayfaya dönüş butonunun görünümünü belirler. */
+.payment-home-button {
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    color: #1f2937;
+    background: #ffffff;
+    font-weight: 600;
+}
+
+/* Sayfanın ana içerik alanının genişliğini sınırlar. */
+.payment-container {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 48px 0 64px;
+}
+
+/* Sayfanın başlık bölümünü düzenler. */
+.payment-heading {
+    margin-bottom: 28px;
+}
+
+/* Başlığın üzerindeki küçük metni biçimlendirir. */
+.payment-eyebrow {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #2563eb;
+}
+
+/* Ödeme sayfasının ana başlığını biçimlendirir. */
+.payment-heading h1 {
+    margin: 0;
+    font-size: 36px;
+    color: #111827;
+}
+
+/* Başlık altındaki açıklama metnini düzenler. */
+.payment-heading p:last-child {
+    margin-top: 10px;
+    color: #6b7280;
+}
+
+/* Form ve rezervasyon özetini iki sütuna ayırır. */
+.payment-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+    gap: 28px;
+    align-items: start;
+}
+
+/* Ödeme formunun kart görünümünü oluşturur. */
+.payment-form {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+/* Form başlığının görünümünü belirler. */
+.payment-form h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+/* Sandbox bilgilendirme kutusunu düzenler. */
+.payment-sandbox-info {
+    margin: 0 0 24px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 14px;
+}
+
+/* Her form alanını dikey olarak düzenler. */
+.payment-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+/* Form etiketlerini biçimlendirir. */
+.payment-field label {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Ödeme inputlarının ortak görünümünü belirler. */
+.payment-field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    background: #ffffff;
+}
+
+/* Input seçildiğinde border görünümünü değiştirir. */
+.payment-field input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Ay, yıl ve CVC alanlarını yan yana dizer. */
+.payment-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+/* Form doğrulama hata mesajını biçimlendirir. */
+.payment-error {
+    margin: 4px 0 18px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+/* Ödemeyi Tamamla butonunun görünümünü belirler. */
+.payment-submit-button {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+/* Butonun üzerine gelindiğinde görünümü değiştirir. */
+.payment-submit-button:hover {
+    background: #1d4ed8;
+}
+
+/* Sağ taraftaki rezervasyon özet kartını düzenler. */
+.payment-summary {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+/* Rezervasyon özeti başlığını biçimlendirir. */
+.payment-summary h2 {
+    margin-top: 0;
+    margin-bottom: 22px;
+    color: #111827;
+}
+
+/* Özet içindeki her bilgi satırını düzenler. */
+.payment-summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Özet içindeki açıklama metinlerini biçimlendirir. */
+.payment-summary-row span {
+    color: #6b7280;
+}
+
+/* Özet içindeki değerleri sağa hizalar. */
+.payment-summary-row strong {
+    text-align: right;
+    color: #111827;
+}
+
+/* Toplam fiyat bölümünü diğer satırlardan ayırır. */
+.payment-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 18px;
+    font-size: 19px;
+    font-weight: 700;
+    color: #111827;
+}
+
+/*
+ * Tablet ve küçük ekranlarda form ile özet kartını
+ * alt alta getirir.
+ */
+@media (max-width: 850px) {
+    .payment-header {
+        padding: 18px 24px;
+    }
+
+    .payment-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobil ekranlarda ödeme alanlarını daha kompakt hale getirir. */
+@media (max-width: 600px) {
+    .payment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .payment-header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .payment-container {
+        width: min(100% - 24px, 1180px);
+        padding-top: 30px;
+    }
+
+    .payment-heading h1 {
+        font-size: 29px;
+    }
+
+    /* Ay, yıl ve CVC alanlarını mobilde alt alta getirir. */
+    .payment-row {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-form,
+    .payment-summary {
+        padding: 20px;
+    }
+}

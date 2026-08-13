@@ -103,7 +103,11 @@
     "waitingTitle": "Uçuş sonuçları hazırlanıyor",
     "waitingDescription": "Backend uçuş servisi hazır olduğunda gerçek uçuşlar bu alanda gösterilecektir.",
     "searchAgain": "Yeni Arama Yap",
-    "backHome": "Ana Sayfa"
+    "backHome": "Ana Sayfa",
+    "noFlights": "Arama kriterlerinize uygun uçuş bulunamadı.",
+    "errors": {
+      "fetchFailed": "Uçuş bilgileri alınırken bir hata oluştu."
+    }
   },
   "seatSelection": {
     "eyebrow": "Koltuk Seçimi",
@@ -160,7 +164,7 @@
 },"bookingSuccess": {
   "eyebrow": "Rezervasyon Tamamlandı",
   "title": "Bilet İşleminiz Başarıyla Tamamlandı",
-  "description": "Uçuş ve yolcu bilgileriniz kaydedildi. Gerçek backend bilet servisi bağlandığında rezervasyon bilgileri sunucu üzerinden oluşturulacaktır.",
+  "description": "Rezervasyonunuz başarıyla oluşturuldu. Uçuş ve bilet bilgileriniz sisteme kaydedildi.",
   "home": "Ana Sayfa",
   "passenger": "Yolcu",
   "flight": "Uçuş",

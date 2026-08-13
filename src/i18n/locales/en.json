@@ -102,7 +102,11 @@
   "waitingTitle": "Flight results are being prepared",
   "waitingDescription": "Real flights will be displayed here when the backend flight service is available.",
   "searchAgain": "Search Again",
-  "backHome": "Home"
+  "backHome": "Home",
+  "noFlights": "No flights were found matching your search criteria.",
+  "errors": {
+    "fetchFailed": "An error occurred while loading flights."
+  }
 },"seatSelection": {
   "eyebrow": "Seat Selection",
   "title": "Choose Your Seat",
@@ -157,7 +161,7 @@
 },"bookingSuccess": {
   "eyebrow": "Booking Completed",
   "title": "Your Ticket Process Has Been Completed",
-  "description": "Your flight and passenger information has been recorded. Once the real backend ticket service is connected, reservation data will be created through the server.",
+  "description": "Your reservation was created successfully. Your flight and ticket information has been saved to the system.",
   "home": "Home",
   "passenger": "Passenger",
   "flight": "Flight",
