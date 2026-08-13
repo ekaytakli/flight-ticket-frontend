@@ -1,19 +1,18 @@
-// Ana sayfaya ve yeni uçuş aramasına bağlantı vermek için kullanılır.
+// Ana sayfa bağlantısı ve URL bilgileri için kullanılır.
 import { Link, useSearchParams } from "react-router-dom";
+
+// Ekrandaki metinleri aktif dile göre getirir.
+import { useTranslation } from "react-i18next";
 
 // Dil değiştirme bileşenidir.
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
-// Başarılı ödeme ekranının stil dosyasıdır.
 import "./PaymentStatusPage.css";
 
-/*
- * Ödeme başarılı olduğunda kullanıcıya
- * işlem sonucunu ve rezervasyon bilgilerini gösterir.
- */
+/* Ödeme başarılı olduğunda bilet ve PNR bilgisini gösterir. */
 export default function PaymentSuccessPage() {
-    // Önceki sayfadan gelen ödeme ve rezervasyon bilgilerini okur.
     const [searchParams] = useSearchParams();
+    const { t } = useTranslation();
 
     const paymentId = searchParams.get("paymentId") ?? "";
     const pnrKodu = searchParams.get("pnrKodu") ?? "";
@@ -23,12 +22,8 @@ export default function PaymentSuccessPage() {
 
     return (
         <main className="payment-status-page">
-            {/* Sayfanın üst menüsüdür. */}
             <header className="payment-status-header">
-                <Link
-                    to="/"
-                    className="payment-status-logo"
-                >
+                <Link to="/" className="payment-status-logo">
                     ✈ SkyRoute
                 </Link>
 
@@ -37,8 +32,6 @@ export default function PaymentSuccessPage() {
 
             <section className="payment-status-container">
                 <div className="payment-status-card">
-
-                    {/* Başarılı ödeme ikonudur. */}
                     <div
                         className="payment-status-icon payment-status-icon--success"
                         aria-hidden="true"
@@ -47,62 +40,55 @@ export default function PaymentSuccessPage() {
                     </div>
 
                     <p className="payment-status-eyebrow">
-                        Ödeme Başarılı
+                        {t("paymentSuccess.eyebrow")}
                     </p>
 
-                    <h1>
-                        Biletiniz Başarıyla Oluşturuldu
-                    </h1>
+                    <h1>{t("paymentSuccess.title")}</h1>
 
                     <p className="payment-status-description">
-                        Ödeme işleminiz tamamlandı ve
-                        rezervasyonunuz başarıyla oluşturuldu.
+                        {t("paymentSuccess.description")}
                     </p>
 
-                    {/* Ödeme ve bilet bilgilerini gösterir. */}
+                    {/* Backend'den gelen ödeme ve bilet bilgilerini gösterir. */}
                     <div className="payment-status-details">
                         <div>
-                            <span>Uçuş</span>
+                            <span>{t("paymentSuccess.flight")}</span>
                             <strong>{flightNo || "-"}</strong>
                         </div>
 
                         <div>
-                            <span>Koltuk</span>
+                            <span>{t("paymentSuccess.seat")}</span>
                             <strong>{seatNumber || "-"}</strong>
                         </div>
 
                         <div>
-                            <span>Toplam Tutar</span>
+                            <span>{t("paymentSuccess.total")}</span>
                             <strong>
                                 {amount ? `${amount} TL` : "-"}
                             </strong>
                         </div>
 
                         <div>
-                            <span>PNR</span>
+                            <span>{t("paymentSuccess.pnr")}</span>
                             <strong>{pnrKodu || "-"}</strong>
                         </div>
 
                         <div>
-                            <span>Ödeme ID</span>
+                            <span>{t("paymentSuccess.paymentId")}</span>
                             <strong>{paymentId || "-"}</strong>
                         </div>
                     </div>
 
-                    {/* Kullanıcının yeni işlem başlatabileceği butonları gösterir. */}
                     <div className="payment-status-actions">
-                        <Link
-                            to="/"
-                            className="payment-status-primary"
-                        >
-                            Yeni Uçuş Ara
+                        <Link to="/" className="payment-status-primary">
+                            {t("paymentSuccess.newSearch")}
                         </Link>
 
                         <Link
                             to="/login"
                             className="payment-status-secondary"
                         >
-                            Giriş Yap
+                            {t("paymentSuccess.login")}
                         </Link>
                     </div>
                 </div>

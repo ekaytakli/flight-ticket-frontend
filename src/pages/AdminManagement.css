@@ -258,3 +258,49 @@
         width: 100%;
     }
 }
+
+/* Backend hata mesajlarını yönetim ekranlarında belirgin gösterir. */
+.management-error {
+    margin: 0 0 20px;
+    padding: 13px 15px;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    background: #fff1f2;
+    color: #be123c;
+    font-size: 14px;
+}
+
+/* Koltuk formunu listeyle ayırır. */
+.management-seat-form {
+    margin-bottom: 28px;
+}
+
+.management-seat-form h2 {
+    margin: 0 0 22px;
+    color: #0f172a;
+    font-size: 22px;
+}
+
+/* Müsaitlik checkbox alanını hizalar. */
+.management-checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 46px;
+    align-self: end;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.management-checkbox-field input {
+    width: 18px;
+    height: 18px;
+}
+
+.management-primary-button:disabled,
+.management-secondary-button:disabled,
+.management-action-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}

@@ -1,112 +1,109 @@
-// Backend'e HTTP isteği göndermek için Axios kullanılır.
 import axios from "axios";
-
-// Frontend'de kullanılacak koltuk tipini alır.
 import type { Seat } from "../types/seat";
 
-/*
- * Backend'in SeatResponseDto üzerinden gönderebileceği
- * ham koltuk verisinin yapısını tanımlar.
- */
+/* Koltuk ekleme ve güncellemede backend'e gönderilen alanlar. */
+export type SeatPayload = Omit<Seat, "id">;
+
 interface SeatApiResponse {
-    // Koltuğun benzersiz kimliği.
     id: number;
-
-    // Koltuk numarası.
     seatNumber: string;
-
-    // Koltuk tipi.
     seatType: string;
-
-    /*
-     * Backend boolean alanını "available"
-     * adıyla gönderebileceği için bu alan tanımlanır.
-     */
     available?: boolean;
-
-    /*
-     * Bazı backend cevaplarında "isAvailable"
-     * olarak gelme ihtimali için bunu da destekleriz.
-     */
     isAvailable?: boolean;
-
-    // Koltuğun fiyatı.
     price: number;
-
-    // Koltuğun bağlı olduğu uçuş ID'si.
     flightId: number;
 }
 
-/*
- * SeatController endpointlerinde kullanılacak
- * ortak Axios yapısını oluşturur.
- */
 const seatApi = axios.create({
-    // Backend'deki SeatController'ın temel adresidir.
     baseURL: "/api/v1/seats",
-
-    // JSON formatında veri kullanılacağını belirtir.
     headers: {
         "Content-Type": "application/json",
     },
 });
 
-/*
- * Backend'den gelen koltuk verisini
- * frontend'in Seat yapısına dönüştürür.
- */
-function mapSeat(
-    seat: SeatApiResponse,
-): Seat {
+/* Admin isteklerinde JWT ve seçili dili header'a ekler. */
+function getRequestHeaders() {
+    const token = localStorage.getItem("token");
+    const language = localStorage.getItem("language") ?? "tr";
+
+    return {
+        "Accept-Language": language,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+}
+
+/* Backend koltuk cevabını frontend Seat tipine çevirir. */
+function mapSeat(seat: SeatApiResponse): Seat {
     return {
         id: seat.id,
         seatNumber: seat.seatNumber,
         seatType: seat.seatType,
-
-        /*
-         * Backend "isAvailable" gönderirse onu,
-         * yoksa "available" alanını kullanır.
-         */
-        isAvailable:
-            seat.isAvailable ??
-            seat.available ??
-            false,
-
-        price: seat.price,
+        isAvailable: seat.isAvailable ?? seat.available ?? false,
+        price: Number(seat.price),
         flightId: seat.flightId,
     };
 }
 
-/*
- * Seçilen uçuşa ait bütün koltukları backend'den getirir.
- * Hem müsait hem de dolu koltuklar döner.
- */
-export async function getSeatsByFlightId(
-    flightId: number,
-): Promise<Seat[]> {
-    // GET /api/v1/seats/flight/{flightId} isteğini gönderir.
-    const response =
-        await seatApi.get<SeatApiResponse[]>(
-            `/flight/${flightId}`,
-        );
-
-    // Backend verisini frontend Seat yapısına dönüştürür.
+/* Uçuşun bütün koltuklarını getirir. */
+export async function getSeatsByFlightId(flightId: number): Promise<Seat[]> {
+    const response = await seatApi.get<SeatApiResponse[]>(`/flight/${flightId}`);
     return response.data.map(mapSeat);
 }
 
-/*
- * Seçilen uçuşa ait sadece müsait
- * koltukları backend'den getirir.
- */
+/* Uçuşun sadece müsait koltuklarını getirir. */
 export async function getAvailableSeatsByFlightId(
     flightId: number,
 ): Promise<Seat[]> {
-    // GET /api/v1/seats/available/{flightId} isteğini gönderir.
-    const response =
-        await seatApi.get<SeatApiResponse[]>(
-            `/available/${flightId}`,
-        );
-
-    // Gelen koltukları frontend Seat yapısına dönüştürür.
+    const response = await seatApi.get<SeatApiResponse[]>(`/available/${flightId}`);
     return response.data.map(mapSeat);
+}
+
+/* Yeni koltuk oluşturur. */
+export async function createSeat(data: SeatPayload): Promise<Seat> {
+    /* Java boolean alanı Jackson tarafında "available" olarak okunur. */
+    const requestBody = {
+        seatNumber: data.seatNumber,
+        seatType: data.seatType,
+        available: data.isAvailable,
+        price: data.price,
+        flightId: data.flightId,
+    };
+
+    const response = await seatApi.post<SeatApiResponse>(
+        "/add/seats",
+        requestBody,
+        { headers: getRequestHeaders() },
+    );
+
+    return mapSeat(response.data);
+}
+
+/* Var olan koltuğu günceller. */
+export async function updateSeat(
+    id: number,
+    data: SeatPayload,
+): Promise<Seat> {
+    /* Java boolean alanı Jackson tarafında "available" olarak okunur. */
+    const requestBody = {
+        seatNumber: data.seatNumber,
+        seatType: data.seatType,
+        available: data.isAvailable,
+        price: data.price,
+        flightId: data.flightId,
+    };
+
+    const response = await seatApi.put<SeatApiResponse>(
+        `/update/seats/${id}`,
+        requestBody,
+        { headers: getRequestHeaders() },
+    );
+
+    return mapSeat(response.data);
+}
+
+/* Koltuğu backend'den siler. */
+export async function deleteSeat(id: number): Promise<void> {
+    await seatApi.delete(`/${id}`, {
+        headers: getRequestHeaders(),
+    });
 }
