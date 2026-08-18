@@ -1,10 +1,13 @@
+// Sayfalar arasında bağlantı kurmak için kullanılır.
+import { Link } from "react-router-dom";
+
 // Sayfadaki metinleri seçilen dile göre göstermek için kullanılır.
 import { useTranslation } from "react-i18next";
 
 // Uygulamanın ortak üst menüsünü kullanır.
 import Navbar from "../components/Navbar";
 
-// Giriş yapan customer kullanıcısının bilgilerine erişmek için kullanılır.
+// Giriş yapan customer kullanıcısının bilgilerine erişir.
 import { useAuth } from "../hooks/useAuth";
 
 // Dashboard sayfasının stil dosyasıdır.
@@ -12,28 +15,56 @@ import "./Dashboard.css";
 
 /*
  * Customer rolündeki kullanıcının ana panelidir.
- * Uçuş arama, biletlerim ve profil gibi seçenekleri gösterir.
+ * Uçuş arama ve bilet görüntüleme işlemlerine erişim sağlar.
  */
 export default function CustomerDashboard() {
-    // Çeviri dosyalarındaki metinlere erişmek için kullanılır.
+    // Çeviri dosyalarındaki metinlere erişir.
     const { t } = useTranslation();
 
-    // Giriş yapan kullanıcının bilgilerini AuthContext'ten alır.
+    // Giriş yapan customer kullanıcısının bilgisini alır.
     const { user } = useAuth();
 
     /*
-     * Customer panelinde gösterilecek kartları tanımlar.
-     * Her elemanda kartın ikonu ve çeviri anahtarı bulunur.
+     * Customer panelinde gösterilecek kartları
+     * ve yönlenecekleri sayfaları tanımlar.
      */
     const cards = [
-        ["🔍", "dashboard.flightSearch"],
-        ["🎫", "dashboard.myTickets"],
-        ["👤", "dashboard.profile"],
+        {
+            icon: "🔍",
+            titleKey: "dashboard.flightSearch",
+            descriptionKey:
+                "dashboard.flightSearchDescription",
+            actionKey: "dashboard.searchNow",
+
+            // Ana uçuş arama sayfasına gider.
+            to: "/",
+        },
+        {
+            icon: "🎫",
+            titleKey: "dashboard.myTickets",
+            descriptionKey:
+                "dashboard.myTicketsDescription",
+            actionKey: "dashboard.viewTickets",
+
+            // Kullanıcının biletlerinin gösterildiği sayfaya gider.
+            to: "/my-tickets",
+        },
+        {
+            icon: "👤",
+            titleKey: "dashboard.profile",
+            descriptionKey:
+                "dashboard.profileDescription",
+            actionKey: "dashboard.comingSoon",
+
+            // Profil sayfası henüz hazır olmadığı için route verilmez.
+            to: null,
+        },
     ] as const;
 
     return (
         <div className="dashboard-page">
-            {/* Üst menüyü gösterir. */}
+
+            {/* Ortak üst menüyü gösterir. */}
             <Navbar />
 
             <main className="dashboard-main">
@@ -41,57 +72,87 @@ export default function CustomerDashboard() {
                 {/* Customer kullanıcıyı karşılayan üst alan. */}
                 <section className="dashboard-hero">
                     <span className="dashboard-eyebrow">
-                        {t("dashboard.customerEyebrow")}
+                        {t(
+                            "dashboard.customerEyebrow",
+                        )}
                     </span>
 
                     <h1 className="dashboard-title">
-                        {t("dashboard.customerTitle")}
+                        {t(
+                            "dashboard.customerTitle",
+                        )}
                     </h1>
 
                     <p className="dashboard-description">
-                        {/* Giriş yapan kullanıcının e-posta bilgisini gösterir. */}
-                        <strong>{user?.email}</strong> —{" "}
-
-                        {/* Customer panelinin açıklama metnini gösterir. */}
-                        {t("dashboard.customerDescription")}
+                        <strong>{user?.email}</strong>
+                        {" — "}
+                        {t(
+                            "dashboard.customerDescription",
+                        )}
                     </p>
                 </section>
 
-                {/* Customer işlemlerini kartlar halinde listeler. */}
+                {/* Customer işlemlerini kartlar halinde gösterir. */}
                 <section className="dashboard-grid">
+                    {cards.map((card) => {
 
-                    {/* cards dizisindeki her eleman için bir kart oluşturur. */}
-                    {cards.map(([icon, titleKey]) => (
-                        <article
-                            className="dashboard-card"
-                            key={titleKey}
-                        >
-                            {/* Kartın ikonunu gösterir. */}
-                            <div
-                                className="dashboard-card__icon"
-                                aria-hidden="true"
+                        // Kartların ortak içeriğini oluşturur.
+                        const content = (
+                            <>
+                                <div
+                                    className="dashboard-card__icon"
+                                    aria-hidden="true"
+                                >
+                                    {card.icon}
+                                </div>
+
+                                <h2 className="dashboard-card__title">
+                                    {t(card.titleKey)}
+                                </h2>
+
+                                <p className="dashboard-card__description">
+                                    {t(
+                                        card.descriptionKey,
+                                    )}
+                                </p>
+
+                                <span className="dashboard-card__action">
+                                    {t(card.actionKey)}
+                                </span>
+                            </>
+                        );
+
+                        /*
+                         * Route'u olan kartları tıklanabilir
+                         * Link olarak gösterir.
+                         */
+                        return card.to ? (
+                            <Link
+                                className="
+                                    dashboard-card
+                                    dashboard-card--link
+                                "
+                                key={card.titleKey}
+                                to={card.to}
                             >
-                                {icon}
-                            </div>
-
-                            {/* Kartın başlığını çeviri dosyasından getirir. */}
-                            <h2 className="dashboard-card__title">
-                                {t(titleKey)}
-                            </h2>
-
-                            {/* Customer kartlarının açıklama metnini gösterir. */}
-                            <p className="dashboard-card__description">
-                                {t(
-                                    "dashboard.customerCardDescription",
-                                )}
-                            </p>
-
-                            {/* Özelliğin henüz aktif olmadığını gösterir. */}
-                            <span className="dashboard-card__status">
-                                {t("dashboard.comingSoon")}
-                            </span>
-                        </article>
-                    ))}
+                                {content}
+                            </Link>
+                        ) : (
+                            /*
+                             * Route'u olmayan kartı
+                             * pasif kart olarak gösterir.
+                             */
+                            <article
+                                className="
+                                    dashboard-card
+                                    dashboard-card--disabled
+                                "
+                                key={card.titleKey}
+                            >
+                                {content}
+                            </article>
+                        );
+                    })}
                 </section>
             </main>
         </div>

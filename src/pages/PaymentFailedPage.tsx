@@ -1,35 +1,30 @@
-// Kullanıcıyı tekrar ödeme veya ana sayfaya yönlendirmek için kullanılır.
+// Tekrar ödeme ve ana sayfa bağlantıları için kullanılır.
 import { Link, useSearchParams } from "react-router-dom";
 
-// Dil değiştirme bileşenidir.
-import LanguageSwitcher from "../components/LanguageSwitcher";
+// Ekrandaki metinleri aktif dile göre getirir.
+import { useTranslation } from "react-i18next";
 
-// Başarısız ödeme ekranının stil dosyasıdır.
+import LanguageSwitcher from "../components/LanguageSwitcher";
 import "./PaymentStatusPage.css";
 
-/*
- * Ödeme başarısız olduğunda kullanıcıya
- * hata bilgisini ve tekrar deneme seçeneğini gösterir.
- */
+/* Ödeme başarısız olduğunda hata bilgisini ve tekrar denemeyi gösterir. */
 export default function PaymentFailedPage() {
-    // Önceki ödeme denemesinden gelen bilgileri okur.
     const [searchParams] = useSearchParams();
+    const { t } = useTranslation();
 
-    const message =
-        searchParams.get("message") ??
-        "Ödeme işlemi tamamlanamadı.";
+    const message = searchParams.get("message") ?? "";
+    const messageKey = searchParams.get("messageKey") ?? "";
+    const retryParams = searchParams.get("retryParams") ?? "";
 
-    const retryParams =
-        searchParams.get("retryParams") ?? "";
+    // Frontend hata anahtarı varsa aktif dile göre çevirir.
+    const visibleMessage = messageKey
+        ? t(messageKey)
+        : message || t("paymentFailed.defaultMessage");
 
     return (
         <main className="payment-status-page">
-            {/* Sayfanın üst menüsüdür. */}
             <header className="payment-status-header">
-                <Link
-                    to="/"
-                    className="payment-status-logo"
-                >
+                <Link to="/" className="payment-status-logo">
                     ✈ SkyRoute
                 </Link>
 
@@ -38,8 +33,6 @@ export default function PaymentFailedPage() {
 
             <section className="payment-status-container">
                 <div className="payment-status-card">
-
-                    {/* Başarısız ödeme ikonudur. */}
                     <div
                         className="payment-status-icon payment-status-icon--failed"
                         aria-hidden="true"
@@ -48,23 +41,19 @@ export default function PaymentFailedPage() {
                     </div>
 
                     <p className="payment-status-eyebrow">
-                        Ödeme Başarısız
+                        {t("paymentFailed.eyebrow")}
                     </p>
 
-                    <h1>
-                        Ödeme İşlemi Tamamlanamadı
-                    </h1>
+                    <h1>{t("paymentFailed.title")}</h1>
 
-                    {/* Backend'den gelen hata mesajını gösterir. */}
                     <p
                         className="payment-status-description"
                         role="alert"
                     >
-                        {message}
+                        {visibleMessage}
                     </p>
 
                     <div className="payment-status-actions">
-                        {/* Önceki ödeme bilgileri varsa tekrar ödeme sayfasına döner. */}
                         <Link
                             to={
                                 retryParams
@@ -73,15 +62,11 @@ export default function PaymentFailedPage() {
                             }
                             className="payment-status-primary"
                         >
-                            Tekrar Dene
+                            {t("paymentFailed.retry")}
                         </Link>
 
-                        {/* Kullanıcıyı ana sayfaya götürür. */}
-                        <Link
-                            to="/"
-                            className="payment-status-secondary"
-                        >
-                            Ana Sayfaya Dön
+                        <Link to="/" className="payment-status-secondary">
+                            {t("paymentFailed.home")}
                         </Link>
                     </div>
                 </div>

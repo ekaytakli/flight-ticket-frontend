@@ -19,9 +19,13 @@ import RoleRoute from "./components/RoleRoute";
 
 /* Uygulamada gösterilecek sayfalar. */
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminFlightFormPage from "./pages/AdminFlightFormPage";
+import AdminFlightsPage from "./pages/AdminFlightsPage";
+import AdminSeatManagementPage from "./pages/AdminSeatManagementPage";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import MyTicketsPage from "./pages/MyTicketsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
@@ -158,6 +162,24 @@ export default function App() {
                         path="/admin"
                         element={<AdminDashboard />}
                     />
+
+                    {/* Uçuş ve koltuk yönetimi sadece admin tarafından açılabilir. */}
+                    <Route
+                        path="/admin/flights"
+                        element={<AdminFlightsPage />}
+                    />
+                    <Route
+                        path="/admin/flights/new"
+                        element={<AdminFlightFormPage />}
+                    />
+                    <Route
+                        path="/admin/flights/:id/edit"
+                        element={<AdminFlightFormPage />}
+                    />
+                    <Route
+                        path="/admin/flights/:flightId/seats"
+                        element={<AdminSeatManagementPage />}
+                    />
                 </Route>
 
                 {/*
@@ -179,6 +201,12 @@ export default function App() {
                     <Route
                         path="/customer"
                         element={<CustomerDashboard />}
+                    />
+
+                    {/* Müşterinin satın aldığı biletleri gösterecek sayfa. */}
+                    <Route
+                        path="/my-tickets"
+                        element={<MyTicketsPage />}
                     />
                 </Route>
 
