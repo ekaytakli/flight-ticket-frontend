@@ -1,17 +1,23 @@
-// Ödeme formundaki alanları, loading ve hata durumunu yönetmek için kullanılır.
+// Ödeme formundaki alanları ve istek durumunu yönetir.
 import {
     useState,
     type FormEvent,
 } from "react";
 
-// URL bilgilerini okumak ve sayfalar arasında yönlendirme yapmak için kullanılır.
+// Axios hatalarında HTTP durum kodunu okumak için kullanılır.
+import axios from "axios";
+
+// Sayfalar arasında geçiş ve URL parametrelerini okumak için kullanılır.
 import {
     Link,
     useNavigate,
     useSearchParams,
 } from "react-router-dom";
 
-// Backend ödeme servisine istek gönderen fonksiyondur.
+// Ekrandaki metinleri aktif dile göre getirir.
+import { useTranslation } from "react-i18next";
+
+// Backend ödeme servisine istek gönderir.
 import { createPayment } from "../api/paymentApi";
 
 // Türkçe / İngilizce dil değiştirme bileşenidir.
@@ -25,79 +31,41 @@ import "./PaymentPage.css";
  * ödeme bilgilerini girdiği sayfadır.
  */
 export default function PaymentPage() {
-    // Ödeme sonucuna göre başka sayfalara yönlendirme yapmak için kullanılır.
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
-    // BookingSummaryPage'den gelen URL bilgilerini okumak için kullanılır.
+    // BookingSummaryPage'den gelen rezervasyon bilgilerini okur.
     const [searchParams] = useSearchParams();
 
-    // Uçuş bilgilerini URL parametrelerinden alır.
-    const flightId =
-        searchParams.get("flightId") ?? "";
+    const flightId = searchParams.get("flightId") ?? "";
+    const flightNo = searchParams.get("flightNo") ?? "";
+    const departure = searchParams.get("from") ?? "";
+    const destination = searchParams.get("to") ?? "";
+    const date = searchParams.get("date") ?? "";
 
-    const flightNo =
-        searchParams.get("flightNo") ?? "";
+    const seatId = searchParams.get("seatId") ?? "";
+    const seatNumber = searchParams.get("seatNumber") ?? "";
+    const seatPrice = searchParams.get("seatPrice") ?? "";
 
-    const departure =
-        searchParams.get("from") ?? "";
+    const firstName = searchParams.get("firstName") ?? "";
+    const lastName = searchParams.get("lastName") ?? "";
+    const email = searchParams.get("email") ?? "";
+    const phone = searchParams.get("phone") ?? "";
 
-    const destination =
-        searchParams.get("to") ?? "";
+    // Kart bilgilerini form state'inde tutar.
+    const [cardHolder, setCardHolder] = useState("");
+    const [cardNumber, setCardNumber] = useState("");
+    const [expireMonth, setExpireMonth] = useState("");
+    const [expireYear, setExpireYear] = useState("");
+    const [cvc, setCvc] = useState("");
 
-    const date =
-        searchParams.get("date") ?? "";
+    // İstek sırasında butonu pasif yapmak için kullanılır.
+    const [loading, setLoading] = useState(false);
 
-    // Koltuk bilgilerini URL parametrelerinden alır.
-    const seatId =
-        searchParams.get("seatId") ?? "";
+    // Form doğrulama hatasını kullanıcıya gösterir.
+    const [error, setError] = useState("");
 
-    const seatNumber =
-        searchParams.get("seatNumber") ?? "";
-
-    const seatPrice =
-        searchParams.get("seatPrice") ?? "";
-
-    // Yolcu bilgilerini URL parametrelerinden alır.
-    const firstName =
-        searchParams.get("firstName") ?? "";
-
-    const lastName =
-        searchParams.get("lastName") ?? "";
-
-    const email =
-        searchParams.get("email") ?? "";
-
-    const phone =
-        searchParams.get("phone") ?? "";
-
-    // Ödeme formundaki kart bilgilerini state'te tutar.
-    const [cardHolder, setCardHolder] =
-        useState("");
-
-    const [cardNumber, setCardNumber] =
-        useState("");
-
-    const [expireMonth, setExpireMonth] =
-        useState("");
-
-    const [expireYear, setExpireYear] =
-        useState("");
-
-    const [cvc, setCvc] =
-        useState("");
-
-    // Ödeme isteğinin devam edip etmediğini tutar.
-    const [loading, setLoading] =
-        useState(false);
-
-    // Kullanıcıya gösterilecek hata mesajını tutar.
-    const [error, setError] =
-        useState("");
-
-    /*
-     * Mevcut rezervasyon bilgilerini
-     * tekrar ödeme sayfasına dönebilmek için hazırlar.
-     */
+    // Başarısız ödemeden sonra aynı rezervasyona geri dönmeyi sağlar.
     const createReservationParams = () =>
         new URLSearchParams({
             flightId,
@@ -114,20 +82,37 @@ export default function PaymentPage() {
             phone,
         });
 
-    /*
-     * Ödeme formu gönderildiğinde alanları kontrol eder
-     * ve backend ödeme servisine istek gönderir.
-     */
+    // Failed sayfasına giderken rezervasyon bilgilerini korur.
+    const goToFailedPage = (
+        options: {
+            message?: string;
+            messageKey?: string;
+        },
+    ) => {
+        const retryParams = createReservationParams();
+        const failedParams = new URLSearchParams({
+            retryParams: retryParams.toString(),
+        });
+
+        if (options.message) {
+            failedParams.set("message", options.message);
+        }
+
+        if (options.messageKey) {
+            failedParams.set("messageKey", options.messageKey);
+        }
+
+        navigate(`/payment-failed?${failedParams.toString()}`);
+    };
+
+    // Formu kontrol eder ve ödeme isteğini başlatır.
     const handleSubmit = async (
         event: FormEvent<HTMLFormElement>,
     ) => {
-        // Form gönderildiğinde sayfanın yenilenmesini engeller.
         event.preventDefault();
-
-        // Önceki hata mesajını temizler.
         setError("");
 
-        // Kart bilgilerinden biri boşsa işlemi durdurur.
+        // Kart alanlarından biri boşsa backend'e istek göndermez.
         if (
             !cardHolder.trim() ||
             !cardNumber.trim() ||
@@ -135,220 +120,153 @@ export default function PaymentPage() {
             !expireYear.trim() ||
             !cvc.trim()
         ) {
-            setError(
-                "Ödeme bilgilerini eksiksiz doldurmalısınız.",
-            );
+            setError(t("payment.errors.required"));
             return;
         }
 
-        // Uçuş, koltuk veya fiyat bilgisi eksikse ödeme yapılmaz.
-        if (
-            !flightId ||
-            !seatId ||
-            !seatPrice
-        ) {
-            setError(
-                "Rezervasyon bilgileri eksik.",
-            );
+        // Rezervasyonun temel bilgileri yoksa ödeme başlatılmaz.
+        if (!flightId || !seatId || !seatPrice) {
+            setError(t("payment.errors.reservationMissing"));
             return;
         }
 
         try {
-            // Ödeme isteği başlarken butonu pasif hale getirir.
             setLoading(true);
 
-            /*
-             * Backend ödeme servisine uçuş,
-             * koltuk ve tutar bilgisini gönderir.
-             */
-            /*
- * Formdaki rezervasyon, yolcu ve kart bilgilerini
- * backend ödeme endpointine gönderir.
- */
-            const payment =
-                await createPayment({
-                    flightId: Number(flightId),
-                    seatId: Number(seatId),
-                    amount: Number(seatPrice),
+            // Form verilerini backend ödeme endpointine gönderir.
+            const payment = await createPayment({
+                flightId: Number(flightId),
+                seatId: Number(seatId),
+                amount: Number(seatPrice),
+                firstName,
+                lastName,
+                email,
+                phone,
+                cardHolderName: cardHolder.trim(),
 
-                    firstName,
-                    lastName,
-                    email,
-                    phone,
+                // Kart numarasındaki boşlukları backend'e göndermeden kaldırır.
+                cardNumber: cardNumber.replace(/\s/g, ""),
+                expireMonth: expireMonth.trim(),
+                expireYear: expireYear.trim(),
+                cvc: cvc.trim(),
+            });
 
-                    cardHolderName: cardHolder.trim(),
-
-                    // Kullanıcı kart numarasını boşluklu yazarsa
-                    // backend'e boşlukları kaldırarak gönderir.
-                    cardNumber: cardNumber.replace(/\s/g, ""),
-
-                    expireMonth: expireMonth.trim(),
-                    expireYear: expireYear.trim(),
-                    cvc: cvc.trim(),
+            // Başarılı ödemede PNR ve ödeme bilgilerini success sayfasına taşır.
+            if (payment.status === "SUCCESS") {
+                const params = new URLSearchParams({
+                    paymentId: payment.paymentId ?? "",
+                    pnrKodu: payment.pnrKodu ?? "",
+                    flightNo,
+                    seatNumber,
+                    amount: seatPrice,
                 });
 
-            // Backend ödeme sonucunu başarılı döndürürse success sayfasına gider.
-            if (
-                payment.status ===
-                "SUCCESS"
-            ) {
-                const params =
-                    new URLSearchParams({
-                        paymentId:
-                            payment.paymentId ??
-                            "",
-                        pnrKodu:
-                            payment.pnrKodu ??
-                            "",
-                        flightNo,
-                        seatNumber,
-                        amount: seatPrice,
-                    });
-
-                navigate(
-                    `/payment-success?${params.toString()}`,
-                );
-
+                navigate(`/payment-success?${params.toString()}`);
                 return;
             }
 
-            /*
-             * Backend ödeme işlemini başarısız olarak
-             * döndürürse failed sayfasına yönlendirir.
-             */
-            const retryParams =
-                createReservationParams();
-
-            const failedParams =
-                new URLSearchParams({
-                    message:
-                        payment.message ??
-                        "Ödeme işlemi başarısız oldu.",
-
-                    // Kullanıcının tekrar ödeme yapabilmesi için rezervasyon bilgilerini korur.
-                    retryParams:
-                        retryParams.toString(),
+            // Backend FAILED döndürürse mesajı kullanıcıya gösterir.
+            if (payment.message) {
+                goToFailedPage({ message: payment.message });
+            } else {
+                goToFailedPage({
+                    messageKey: "payment.errors.failed",
                 });
+            }
+        } catch (requestError) {
+            console.error("Ödeme sırasında hata:", requestError);
 
-            navigate(
-                `/payment-failed?${failedParams.toString()}`,
-            );
-        } catch (error) {
-            // Gerçek backend hatasını geliştirici konsolunda gösterir.
-            console.error(
-                "Ödeme sırasında hata:",
-                error,
-            );
-
-            /*
-             * Backend ödeme endpointine ulaşılamazsa
-             * başarısız ödeme ekranına yönlendirir.
-             */
-            const retryParams =
-                createReservationParams();
-
-            const failedParams =
-                new URLSearchParams({
-                    message:
-                        "Ödeme servisine şu anda ulaşılamıyor.",
-
-                    retryParams:
-                        retryParams.toString(),
+            // Rate limit aşılırsa 429 için özel ve anlaşılır mesaj gösterir.
+            if (
+                axios.isAxiosError(requestError) &&
+                requestError.response?.status === 429
+            ) {
+                goToFailedPage({
+                    messageKey: "payment.errors.tooManyRequests",
                 });
+                return;
+            }
 
-            navigate(
-                `/payment-failed?${failedParams.toString()}`,
-            );
+            // Backend hata mesajı döndürdüyse onu kullanıcıya iletir.
+            if (axios.isAxiosError(requestError)) {
+                const backendMessage = (
+                    requestError.response?.data as
+                        | { message?: string }
+                        | undefined
+                )?.message;
+
+                if (backendMessage) {
+                    goToFailedPage({ message: backendMessage });
+                    return;
+                }
+            }
+
+            // Bağlantı gibi diğer hatalarda genel servis mesajı kullanılır.
+            goToFailedPage({
+                messageKey: "payment.errors.serviceUnavailable",
+            });
         } finally {
-            // Ödeme isteği tamamlandığında loading durumunu kapatır.
             setLoading(false);
         }
     };
 
     return (
         <main className="payment-page">
-
-            {/* Sayfanın üst menüsüdür. */}
             <header className="payment-header">
-                <Link
-                    to="/"
-                    className="payment-logo"
-                >
+                <Link to="/" className="payment-logo">
                     ✈ SkyRoute
                 </Link>
 
                 <div className="payment-header-actions">
-                    {/* Dil değiştirme butonlarını gösterir. */}
                     <LanguageSwitcher />
 
-                    {/* Kullanıcıyı ana sayfaya götürür. */}
-                    <Link
-                        to="/"
-                        className="payment-home-button"
-                    >
-                        Ana Sayfa
+                    <Link to="/" className="payment-home-button">
+                        {t("payment.home")}
                     </Link>
                 </div>
             </header>
 
             <section className="payment-container">
-
-                {/* Sayfanın başlık alanıdır. */}
                 <div className="payment-heading">
                     <p className="payment-eyebrow">
-                        Güvenli Ödeme
+                        {t("payment.eyebrow")}
                     </p>
 
-                    <h1>
-                        Ödeme Bilgileri
-                    </h1>
+                    <h1>{t("payment.title")}</h1>
 
-                    <p>
-                        Rezervasyonunuzu tamamlamak için
-                        ödeme bilgilerinizi girin.
-                    </p>
+                    <p>{t("payment.description")}</p>
                 </div>
 
                 <div className="payment-layout">
-
-                    {/* Kullanıcının ödeme bilgilerini girdiği formdur. */}
                     <form
                         className="payment-form"
                         onSubmit={handleSubmit}
                     >
-                        <h2>
-                            Kart Bilgileri
-                        </h2>
+                        <h2>{t("payment.cardTitle")}</h2>
 
-                        {/* Sandbox ortamı hakkında kullanıcıyı bilgilendirir. */}
                         <p className="payment-sandbox-info">
-                            Sandbox test ortamında yalnızca
-                            test kart bilgileri kullanılmalıdır.
+                            {t("payment.sandboxInfo")}
                         </p>
 
-                        {/* Kart sahibinin adını alır. */}
                         <div className="payment-field">
                             <label htmlFor="cardHolder">
-                                Kart Üzerindeki İsim
+                                {t("payment.cardHolder")}
                             </label>
 
                             <input
                                 id="cardHolder"
                                 type="text"
                                 value={cardHolder}
-                                placeholder="Ad Soyad"
+                                placeholder={t("payment.cardHolderPlaceholder")}
                                 onChange={(event) =>
-                                    setCardHolder(
-                                        event.target.value,
-                                    )
+                                    setCardHolder(event.target.value)
                                 }
                             />
                         </div>
 
-                        {/* Kart numarasını alır. */}
                         <div className="payment-field">
                             <label htmlFor="cardNumber">
-                                Kart Numarası
+                                {t("payment.cardNumber")}
                             </label>
 
                             <input
@@ -359,20 +277,15 @@ export default function PaymentPage() {
                                 placeholder="0000 0000 0000 0000"
                                 maxLength={19}
                                 onChange={(event) =>
-                                    setCardNumber(
-                                        event.target.value,
-                                    )
+                                    setCardNumber(event.target.value)
                                 }
                             />
                         </div>
 
-                        {/* Son kullanma tarihi ve CVC alanlarıdır. */}
                         <div className="payment-row">
-
-                            {/* Son kullanma ayını alır. */}
                             <div className="payment-field">
                                 <label htmlFor="expireMonth">
-                                    Ay
+                                    {t("payment.expireMonth")}
                                 </label>
 
                                 <input
@@ -383,17 +296,14 @@ export default function PaymentPage() {
                                     placeholder="MM"
                                     maxLength={2}
                                     onChange={(event) =>
-                                        setExpireMonth(
-                                            event.target.value,
-                                        )
+                                        setExpireMonth(event.target.value)
                                     }
                                 />
                             </div>
 
-                            {/* Son kullanma yılını alır. */}
                             <div className="payment-field">
                                 <label htmlFor="expireYear">
-                                    Yıl
+                                    {t("payment.expireYear")}
                                 </label>
 
                                 <input
@@ -404,17 +314,14 @@ export default function PaymentPage() {
                                     placeholder="YY"
                                     maxLength={2}
                                     onChange={(event) =>
-                                        setExpireYear(
-                                            event.target.value,
-                                        )
+                                        setExpireYear(event.target.value)
                                     }
                                 />
                             </div>
 
-                            {/* Kart güvenlik kodunu alır. */}
                             <div className="payment-field">
                                 <label htmlFor="cvc">
-                                    CVC
+                                    {t("payment.cvc")}
                                 </label>
 
                                 <input
@@ -425,102 +332,64 @@ export default function PaymentPage() {
                                     placeholder="***"
                                     maxLength={4}
                                     onChange={(event) =>
-                                        setCvc(
-                                            event.target.value,
-                                        )
+                                        setCvc(event.target.value)
                                     }
                                 />
                             </div>
                         </div>
 
-                        {/* Formda hata varsa kullanıcıya gösterir. */}
                         {error && (
-                            <p
-                                className="payment-error"
-                                role="alert"
-                            >
+                            <p className="payment-error" role="alert">
                                 {error}
                             </p>
                         )}
 
-                        {/* Ödeme işlemini backend üzerinden başlatır. */}
                         <button
                             type="submit"
                             className="payment-submit-button"
                             disabled={loading}
                         >
                             {loading
-                                ? "Ödeme İşleniyor..."
-                                : "Ödemeyi Tamamla"}
+                                ? t("payment.processing")
+                                : t("payment.submit")}
                         </button>
                     </form>
 
-                    {/* Rezervasyon özetini gösterir. */}
                     <aside className="payment-summary">
-                        <h2>
-                            Rezervasyon Özeti
-                        </h2>
+                        <h2>{t("payment.summaryTitle")}</h2>
 
                         <div className="payment-summary-row">
-                            <span>
-                                Yolcu
-                            </span>
-
+                            <span>{t("payment.passenger")}</span>
                             <strong>
                                 {firstName} {lastName}
                             </strong>
                         </div>
 
                         <div className="payment-summary-row">
-                            <span>
-                                Uçuş
-                            </span>
+                            <span>{t("payment.flight")}</span>
+                            <strong>{flightNo || "-"}</strong>
+                        </div>
 
+                        <div className="payment-summary-row">
+                            <span>{t("payment.route")}</span>
                             <strong>
-                                {flightNo || "-"}
+                                {departure || "-"} → {destination || "-"}
                             </strong>
                         </div>
 
                         <div className="payment-summary-row">
-                            <span>
-                                Rota
-                            </span>
-
-                            <strong>
-                                {departure || "-"} →{" "}
-                                {destination || "-"}
-                            </strong>
+                            <span>{t("payment.date")}</span>
+                            <strong>{date || "-"}</strong>
                         </div>
 
                         <div className="payment-summary-row">
-                            <span>
-                                Tarih
-                            </span>
-
-                            <strong>
-                                {date || "-"}
-                            </strong>
+                            <span>{t("payment.seat")}</span>
+                            <strong>{seatNumber || "-"}</strong>
                         </div>
 
-                        <div className="payment-summary-row">
-                            <span>
-                                Koltuk
-                            </span>
-
-                            <strong>
-                                {seatNumber || "-"}
-                            </strong>
-                        </div>
-
-                        {/* Backend'den gelen gerçek koltuk fiyatını gösterir. */}
                         <div className="payment-total">
-                            <span>
-                                Toplam
-                            </span>
-
-                            <strong>
-                                {seatPrice || "0"} TL
-                            </strong>
+                            <span>{t("payment.total")}</span>
+                            <strong>{seatPrice || "0"} TL</strong>
                         </div>
                     </aside>
                 </div>

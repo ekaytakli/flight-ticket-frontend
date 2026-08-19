@@ -12,7 +12,7 @@ import type {
  * ortak Axios yapısını oluşturur.
  */
 const paymentApi = axios.create({
-    // Backend ödeme servisi hazır olduğunda bu adres kullanılacaktır.
+    // Backend ödeme servisinin temel adresidir.
     baseURL: "/api/v1/payments",
 
     // JSON formatında veri gönderileceğini belirtir.
@@ -22,10 +22,34 @@ const paymentApi = axios.create({
 });
 
 /*
+ * Kullanıcı giriş yapmışsa JWT token'ını,
+ * ayrıca seçili dil bilgisini request header'ına ekler.
+ *
+ * Kullanıcı giriş yapmamışsa Authorization header'ı
+ * gönderilmez ve public ödeme akışı çalışmaya devam eder.
+ */
+function getRequestHeaders() {
+    const token = localStorage.getItem("token");
+
+    const language =
+        localStorage.getItem("language") ?? "tr";
+
+    return {
+        "Accept-Language": language,
+
+        ...(token
+            ? {
+                Authorization: `Bearer ${token}`,
+            }
+            : {}),
+    };
+}
+
+/*
  * Ödeme işlemini backend'e gönderir.
  *
- * Backend iyzico entegrasyonu hazır olduğunda
- * gerçek ödeme işlemi bu fonksiyon üzerinden yapılacaktır.
+ * Kullanıcı giriş yaptıysa JWT de ödeme isteğiyle
+ * birlikte backend'e gönderilir.
  */
 export async function createPayment(
     data: PaymentRequest,
@@ -35,6 +59,9 @@ export async function createPayment(
         await paymentApi.post<PaymentResponse>(
             "",
             data,
+            {
+                headers: getRequestHeaders(),
+            },
         );
 
     // Backend'in ödeme sonucunu döndürür.

@@ -1,76 +1,99 @@
-// Form alanlarını state'te tutmak ve form gönderme event tipini kullanmak için alınır.
 import { useState, type FormEvent } from "react";
 
-// Sayfalar arası bağlantı ve kod ile yönlendirme yapmak için kullanılır.
-import { Link, useNavigate } from "react-router-dom";
+import {
+    Link,
+    useNavigate,
+} from "react-router-dom";
 
-// Sayfadaki metinleri seçilen dile göre göstermek için kullanılır.
 import { useTranslation } from "react-i18next";
 
-// Türkçe / İngilizce dil değiştirme bileşenidir.
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
-// Ana sayfanın stil dosyasıdır.
+// Giriş yapan kullanıcının bilgilerine ve logout fonksiyonuna erişir.
+import { useAuth } from "../hooks/useAuth";
+
 import "./HomePage.css";
 
 /*
- * Kullanıcının giriş yapmadan uçuş arayabildiği ana sayfadır.
- * Kalkış, varış ve tarih bilgilerini uçuş sonuçları sayfasına aktarır.
+ * Kullanıcının giriş yapmadan da uçuş arayabildiği ana sayfadır.
+ *
+ * Kullanıcı giriş yaptıysa üst menüde
+ * oturum bilgisi ve panel bağlantısı gösterilir.
  */
 export default function HomePage() {
-    // Arama sonrası FlightResultsPage'e yönlendirme yapmak için kullanılır.
     const navigate = useNavigate();
 
-    // Çeviri dosyalarındaki metinlere erişir.
     const { t } = useTranslation();
 
-    // Kullanıcının seçtiği kalkış noktasını tutar.
-    const [departure, setDeparture] = useState("");
+    /*
+     * Giriş yapan kullanıcı bilgilerini ve
+     * çıkış yapma fonksiyonunu AuthContext'ten alır.
+     */
+    const { user, logout } = useAuth();
 
-    // Kullanıcının seçtiği varış noktasını tutar.
-    const [destination, setDestination] = useState("");
+    const [departure, setDeparture] =
+        useState("");
 
-    // Kullanıcının seçtiği uçuş tarihini tutar.
-    const [date, setDate] = useState("");
+    const [destination, setDestination] =
+        useState("");
 
-    // Form doğrulama hata mesajını tutar.
-    const [error, setError] = useState("");
+    const [date, setDate] =
+        useState("");
+
+    const [error, setError] =
+        useState("");
+
+    /*
+     * Kullanıcı giriş yaptıysa rolüne göre
+     * yönlendirileceği dashboard adresini belirler.
+     */
+    const dashboardPath =
+        user?.role === "ROLE_ADMIN"
+            ? "/admin"
+            : "/customer";
+
+    /*
+     * Kullanıcı çıkış yaptığında
+     * oturum bilgilerini temizler.
+     *
+     * Ana sayfa public olduğu için kullanıcı
+     * ana sayfada kalmaya devam eder.
+     */
+    const handleLogout = () => {
+        logout();
+    };
 
     /*
      * Kullanıcı "Uçuş Ara" butonuna bastığında çalışır.
-     * Alanları kontrol edip arama bilgilerini sonuç sayfasına gönderir.
      */
     const handleSearch = (
         event: FormEvent<HTMLFormElement>,
     ) => {
-        // Form gönderildiğinde sayfanın yenilenmesini engeller.
         event.preventDefault();
 
-        // Önceden oluşmuş hata mesajını temizler.
         setError("");
 
-        // Kalkış, varış veya tarih boşsa arama işlemini durdurur.
         if (
             !departure.trim() ||
             !destination.trim() ||
             !date
         ) {
-            setError(t("home.errors.required"));
+            setError(
+                t("home.errors.required"),
+            );
             return;
         }
 
-        /*
-         * Arama bilgilerini URL'de taşınabilecek
-         * query parametrelerine dönüştürür.
-         */
-        const params = new URLSearchParams({
-            from: departure.trim(),
-            to: destination.trim(),
-            date,
-        });
+        const params =
+            new URLSearchParams({
+                from: departure.trim(),
+                to: destination.trim(),
+                date,
+            });
 
-        // Kullanıcıyı arama bilgileriyle FlightResultsPage'e yönlendirir.
-        navigate(`/flights?${params.toString()}`);
+        navigate(
+            `/flights?${params.toString()}`,
+        );
     };
 
     return (
@@ -79,88 +102,135 @@ export default function HomePage() {
             {/* Ana sayfanın üst menüsü. */}
             <header className="home-header">
 
-                {/* Logoya basıldığında tekrar ana sayfaya gider. */}
-                <Link to="/" className="home-logo">
+                <Link
+                    to="/"
+                    className="home-logo"
+                >
                     ✈ SkyRoute
                 </Link>
 
-                {/* Dil, giriş ve kayıt bağlantılarını içerir. */}
                 <nav className="home-navigation">
+
                     <LanguageSwitcher />
 
-                    {/* Login sayfasına yönlendirir. */}
-                    <Link
-                        to="/login"
-                        className="home-login-button"
-                    >
-                        {t("auth.loginButton")}
-                    </Link>
+                    {/*
+                     * Kullanıcı giriş yaptıysa
+                     * login/register yerine hesap bilgileri gösterilir.
+                     */}
+                    {user ? (
+                        <>
+                            {/* Giriş yapan kullanıcının e-postasını gösterir. */}
+                            <span className="home-user-email">
+                                {user.email}
+                            </span>
 
-                    {/* Register sayfasına yönlendirir. */}
-                    <Link
-                        to="/register"
-                        className="home-register-button"
-                    >
-                        {t("auth.registerButton")}
-                    </Link>
+                            {/*
+                             * Admin ise admin paneline,
+                             * customer ise customer paneline gider.
+                             */}
+                            <Link
+                                to={dashboardPath}
+                                className="home-login-button"
+                            >
+                                {user.role ===
+                                "ROLE_ADMIN"
+                                    ? t(
+                                        "navigation.adminDashboard",
+                                    )
+                                    : t(
+                                        "navigation.customerDashboard",
+                                    )}
+                            </Link>
+
+                            {/* Kullanıcıyı oturumdan çıkarır. */}
+                            <button
+                                type="button"
+                                className="home-register-button"
+                                onClick={handleLogout}
+                            >
+                                {t("common.logout")}
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            {/*
+                             * Kullanıcı giriş yapmamışsa
+                             * normal login/register butonları gösterilir.
+                             */}
+                            <Link
+                                to="/login"
+                                className="home-login-button"
+                            >
+                                {t(
+                                    "auth.loginButton",
+                                )}
+                            </Link>
+
+                            <Link
+                                to="/register"
+                                className="home-register-button"
+                            >
+                                {t(
+                                    "auth.registerButton",
+                                )}
+                            </Link>
+                        </>
+                    )}
                 </nav>
             </header>
 
-            {/* Ana sayfadaki uçuş arama bölümüdür. */}
+            {/* Ana sayfadaki uçuş arama bölümü. */}
             <section className="home-hero">
                 <div className="home-hero-content">
 
-                    {/* Ana sayfanın küçük üst başlığını gösterir. */}
                     <p className="home-eyebrow">
                         {t("home.eyebrow")}
                     </p>
 
-                    {/* Ana başlığı gösterir. */}
                     <h1 className="home-title">
                         {t("home.title")}
                     </h1>
 
-                    {/* Ana sayfa açıklamasını gösterir. */}
                     <p className="home-description">
-                        {t("home.description")}
+                        {t(
+                            "home.description",
+                        )}
                     </p>
 
-                    {/* Form gönderildiğinde handleSearch çalışır. */}
                     <form
                         className="flight-search-form"
                         onSubmit={handleSearch}
                     >
-
-                        {/* Kalkış noktası alanı. */}
                         <div className="flight-search-field">
                             <label htmlFor="departure">
-                                {t("home.departure")}
+                                {t(
+                                    "home.departure",
+                                )}
                             </label>
 
                             <input
                                 id="departure"
                                 type="text"
-
-                                // Input değerini departure state'ine bağlar.
                                 value={departure}
-
                                 placeholder={t(
                                     "home.departurePlaceholder",
                                 )}
-
-                                // Kullanıcı yazdıkça departure state'ini günceller.
-                                onChange={(event) =>
+                                onChange={(
+                                    event,
+                                ) =>
                                     setDeparture(
-                                        event.target.value,
+                                        event.target
+                                            .value,
                                     )
                                 }
                             />
                         </div>
 
-                        {/* Varış noktası alanı. */}
                         <div className="flight-search-field">
                             <label htmlFor="destination">
-                                {t("home.destination")}
+                                {t(
+                                    "home.destination",
+                                )}
                             </label>
 
                             <input
@@ -170,17 +240,17 @@ export default function HomePage() {
                                 placeholder={t(
                                     "home.destinationPlaceholder",
                                 )}
-
-                                // Kullanıcı yazdıkça destination state'ini günceller.
-                                onChange={(event) =>
+                                onChange={(
+                                    event,
+                                ) =>
                                     setDestination(
-                                        event.target.value,
+                                        event.target
+                                            .value,
                                     )
                                 }
                             />
                         </div>
 
-                        {/* Uçuş tarihi alanı. */}
                         <div className="flight-search-field">
                             <label htmlFor="date">
                                 {t("home.date")}
@@ -190,24 +260,27 @@ export default function HomePage() {
                                 id="date"
                                 type="date"
                                 value={date}
-
-                                // Seçilen tarihi date state'ine kaydeder.
-                                onChange={(event) =>
-                                    setDate(event.target.value)
+                                onChange={(
+                                    event,
+                                ) =>
+                                    setDate(
+                                        event.target
+                                            .value,
+                                    )
                                 }
                             />
                         </div>
 
-                        {/* Formu gönderip uçuş aramasını başlatır. */}
                         <button
                             type="submit"
                             className="flight-search-button"
                         >
-                            {t("home.searchButton")}
+                            {t(
+                                "home.searchButton",
+                            )}
                         </button>
                     </form>
 
-                    {/* Formda hata varsa kullanıcıya gösterir. */}
                     {error && (
                         <p
                             className="home-error"
