@@ -27,14 +27,14 @@ interface SeatApiResponse {
     seatType: string;
 
     /*
-     * Backend boolean alanını "available"
-     * adıyla gönderebileceği için desteklenir.
+     * Backend boolean alanını bazı cevaplarda
+     * "available" adıyla gönderebilir.
      */
     available?: boolean;
 
     /*
-     * Bazı backend cevaplarında "isAvailable"
-     * olarak gelebileceği için bunu da destekler.
+     * Bazı cevaplarda "isAvailable"
+     * adıyla gelme ihtimalini de destekler.
      */
     isAvailable?: boolean;
 
@@ -53,7 +53,6 @@ const seatApi = axios.create({
     // Backend'deki SeatController'ın temel adresidir.
     baseURL: "/api/v1/seats",
 
-    // JSON formatında veri kullanılacağını belirtir.
     headers: {
         "Content-Type": "application/json",
     },
@@ -64,18 +63,13 @@ const seatApi = axios.create({
  * seçili dil bilgisini header olarak hazırlar.
  */
 function getRequestHeaders() {
-    // Giriş yapan kullanıcının JWT token'ını alır.
     const token = localStorage.getItem("token");
-
-    // Kullanıcının seçtiği dili alır.
     const language =
         localStorage.getItem("language") ?? "tr";
 
     return {
-        // Backend mesajlarının seçili dilde gelmesini sağlar.
         "Accept-Language": language,
 
-        // Token varsa Authorization header'ına ekler.
         ...(token
             ? {
                 Authorization: `Bearer ${token}`,
@@ -105,32 +99,23 @@ function mapSeat(
             seat.available ??
             false,
 
-        // Fiyatı kesin olarak number tipine dönüştürür.
         price: Number(seat.price),
-
         flightId: seat.flightId,
     };
 }
 
 /*
  * Seçilen uçuşa ait bütün koltukları backend'den getirir.
- * Hem müsait hem de dolu koltuklar döner.
  */
 export async function getSeatsByFlightId(
     flightId: number,
 ): Promise<Seat[]> {
-    // GET /api/v1/seats/flight/{flightId} isteğini gönderir.
     const response =
-        await seatApi.get<
-            SeatApiResponse[]
-        >(
+        await seatApi.get<SeatApiResponse[]>(
             `/flight/${flightId}`,
         );
 
-    // Backend verisini frontend Seat yapısına dönüştürür.
-    return response.data.map(
-        mapSeat,
-    );
+    return response.data.map(mapSeat);
 }
 
 /*
@@ -140,18 +125,12 @@ export async function getSeatsByFlightId(
 export async function getAvailableSeatsByFlightId(
     flightId: number,
 ): Promise<Seat[]> {
-    // GET /api/v1/seats/available/{flightId} isteğini gönderir.
     const response =
-        await seatApi.get<
-            SeatApiResponse[]
-        >(
+        await seatApi.get<SeatApiResponse[]>(
             `/available/${flightId}`,
         );
 
-    // Gelen koltukları frontend Seat yapısına dönüştürür.
-    return response.data.map(
-        mapSeat,
-    );
+    return response.data.map(mapSeat);
 }
 
 /*
@@ -161,46 +140,29 @@ export async function createSeat(
     data: SeatPayload,
 ): Promise<Seat> {
     /*
-     * Frontend'deki isAvailable alanını
-     * backend'in beklediği available alanına dönüştürür.
+     * Backend tarafındaki boolean alan Jackson tarafından
+     * "available" adıyla okunabildiği için burada
+     * frontend'deki isAvailable değeri available olarak gönderilir.
      */
     const requestBody = {
-        seatNumber:
-        data.seatNumber,
-
-        seatType:
-        data.seatType,
-
-        available:
-        data.isAvailable,
-
-        price:
-        data.price,
-
-        flightId:
-        data.flightId,
+        seatNumber: data.seatNumber,
+        seatType: data.seatType,
+        available: data.isAvailable,
+        price: data.price,
+        flightId: data.flightId,
     };
 
-    // POST /api/v1/seats/add/seats isteğini gönderir.
+    // POST /api/v1/seats/add/seats
     const response =
-        await seatApi.post<
-            SeatApiResponse
-        >(
+        await seatApi.post<SeatApiResponse>(
             "/add/seats",
-
             requestBody,
-
-            // Admin JWT token'ını request header'ına ekler.
             {
-                headers:
-                    getRequestHeaders(),
+                headers: getRequestHeaders(),
             },
         );
 
-    // Backend cevabını frontend Seat modeline dönüştürür.
-    return mapSeat(
-        response.data,
-    );
+    return mapSeat(response.data);
 }
 
 /*
@@ -211,46 +173,28 @@ export async function updateSeat(
     data: SeatPayload,
 ): Promise<Seat> {
     /*
-     * Frontend'deki isAvailable alanını
-     * backend'in beklediği available alanına dönüştürür.
+     * Güncellemede de boolean değer
+     * backend'e available adıyla gönderilir.
      */
     const requestBody = {
-        seatNumber:
-        data.seatNumber,
-
-        seatType:
-        data.seatType,
-
-        available:
-        data.isAvailable,
-
-        price:
-        data.price,
-
-        flightId:
-        data.flightId,
+        seatNumber: data.seatNumber,
+        seatType: data.seatType,
+        available: data.isAvailable,
+        price: data.price,
+        flightId: data.flightId,
     };
 
-    // PUT /api/v1/seats/update/seats/{id} isteğini gönderir.
+    // PUT /api/v1/seats/update/seats/{id}
     const response =
-        await seatApi.put<
-            SeatApiResponse
-        >(
+        await seatApi.put<SeatApiResponse>(
             `/update/seats/${id}`,
-
             requestBody,
-
-            // Admin JWT token'ını request header'ına ekler.
             {
-                headers:
-                    getRequestHeaders(),
+                headers: getRequestHeaders(),
             },
         );
 
-    // Güncellenmiş koltuk bilgisini frontend modeline dönüştürür.
-    return mapSeat(
-        response.data,
-    );
+    return mapSeat(response.data);
 }
 
 /*
@@ -259,13 +203,10 @@ export async function updateSeat(
 export async function deleteSeat(
     id: number,
 ): Promise<void> {
-    // DELETE /api/v1/seats/{id} isteğini gönderir.
     await seatApi.delete(
         `/${id}`,
         {
-            // Silme işlemi admin yetkisi gerektirdiği için JWT gönderilir.
-            headers:
-                getRequestHeaders(),
+            headers: getRequestHeaders(),
         },
     );
 }

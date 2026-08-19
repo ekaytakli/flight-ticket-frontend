@@ -1,11 +1,10 @@
 .home-page {
     min-height: 100vh;
-    background:
-            linear-gradient(
-                    135deg,
-                    rgba(15, 23, 42, 0.94),
-                    rgba(30, 64, 175, 0.88)
-            );
+    background: linear-gradient(
+            135deg,
+            rgba(15, 23, 42, 0.94),
+            rgba(30, 64, 175, 0.88)
+    );
     color: #ffffff;
 }
 
@@ -97,8 +96,7 @@
     background: #ffffff;
     color: #0f172a;
 
-    box-shadow:
-            0 20px 50px rgba(15, 23, 42, 0.28);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.28);
 }
 
 .flight-search-field {
@@ -162,4 +160,16 @@
     .flight-search-button {
         width: 100%;
     }
+}
+
+.home-user-email {
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.home-navigation button {
+    border: none;
+    font: inherit;
+    cursor: pointer;
 }
